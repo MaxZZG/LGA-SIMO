@@ -2,6 +2,7 @@ function N0 = BasisFuns(Idx, Pts, p, KntVect)
 % N0 = BasisFuns(Idx, Pts, p, KntVect)
 %--------------------------------------------------------------------------
 % Compute the nonvanishing B-splines basis functions.
+% 计算参数点处的非零b样条基函数，Pts为数组，一次计算多个参数点。
 %---------------------------------------------------------------
 % Input:
 %      idx: knot span index
