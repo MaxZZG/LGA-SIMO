@@ -2,6 +2,7 @@ function B = AllBernstein(p, xi)
 % function B = AllBernstein(p, xi)
 %--------------------------------------------------------------------------
 % Compute all pth-order Bernstein basis functions.
+% Bezier曲线的基函数：Bernstein 多项式
 %--------------------------------------------------------------
 % Input:
 %      p: order of polynominal
@@ -32,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 n = p + 1;
 B = zeros(numel(xi), n);
-Bi = zeros(n, 1);
+Bi = zeros(n, 1); %不是应该 Bi = zeros(1, n) ？ Bi 为行向量
 for jj = 1 : numel(xi)
     Bi(1) = 1;
     u1 = 1 - xi(jj);
@@ -45,6 +46,6 @@ for jj = 1 : numel(xi)
         end
         Bi(j) = saved;
     end
-    B (jj, :) = Bi;
+    B (jj, :) = Bi; % B 第jj行 = Bi (Bi 为行向量) 还是说matlib的语法我不搞懂。
 end
 end
