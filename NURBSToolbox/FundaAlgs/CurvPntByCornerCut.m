@@ -2,6 +2,7 @@ function Cw = CurvPntByCornerCut(n, p, KntVect, Pw, Knt)
 % Cw = CurvPntByCornerCut(n, p, KntVect, Pw, Knt)
 % -------------------------------------------------------------------------
 % Compute point on rational B-spline curve
+% 计算 knt 处有理B样条曲线的控制点，通过割角的方式
 % ---------------------------------------------------------------
 % Input:
 %       n: number of basis functions
@@ -13,7 +14,7 @@ function Cw = CurvPntByCornerCut(n, p, KntVect, Pw, Knt)
 % Output:
 %       Cw: new control points
 % ---------------------------------------------------------------
-% Based on Algorithm A5.2 [The NURBS BOOK, p.153].
+% Based on Algorithm A5.2 [The NURBS BOOK, p.153].[非均匀有理B样条（第2版）, p.112]
 % -------------------------------------------------------------------------
 
 %{
