@@ -5,11 +5,11 @@ function B = AllBernstein(p, xi)
 % Bezier曲线的基函数：Bernstein 多项式
 %--------------------------------------------------------------
 % Input:
-%      p: order of polynominal
-%      xi: parametric points
+%      p: order of polynominal  
+%      xi: parametric points  xi是一个数组，意思是多个参数u
 %--------------------------------------------------------------
 % Output:
-%      B: bernstein basis functions
+%      B: bernstein basis functions B为矩阵，每个参数u对应 p+1 个Bernstein的值
 %--------------------------------------------------------------
 % Based on Algorithm A1.3 [The NURBS BOOK, p.20]
 %--------------------------------------------------------------------------
@@ -33,8 +33,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 n = p + 1;
 B = zeros(numel(xi), n);
-Bi = zeros(n, 1); %不是应该 Bi = zeros(1, n) ？ Bi 为行向量
-for jj = 1 : numel(xi)
+Bi = zeros(n, 1); 	% Bi是行向量或者列向量并不影响，最后赋值给B了。感觉Bi最好是行向量。
+for jj = 1 : numel(xi)	% 参数u的个数为循环次数
     Bi(1) = 1;
     u1 = 1 - xi(jj);
     for j = 2 : n
@@ -46,6 +46,6 @@ for jj = 1 : numel(xi)
         end
         Bi(j) = saved;
     end
-    B (jj, :) = Bi; % B 第jj行 = Bi (Bi 为行向量) 还是说matlib的语法我不搞懂。
+    B (jj, :) = Bi; % B 第jj行 = Bi Bi为列向量，赋值时会将一整列赋值给B规定的行里。
 end
 end

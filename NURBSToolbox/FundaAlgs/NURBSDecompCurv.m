@@ -1,7 +1,7 @@
 function [nb, Qw] = NURBSDecompCurv(n, p, KntVect, Pw)
 % [nb, Qw] = NURBSDecompCurv(n, p, KntVect, Pw)
 % -------------------------------------------------------------------------
-% Decompose curve into Bezier segments
+% Decompose curve into Bezier segments 将NURBS曲线分解为nb个Bezier曲线段
 % ---------------------------------------------------------------
 % Input: 
 %       n: number of control points.
@@ -13,7 +13,7 @@ function [nb, Qw] = NURBSDecompCurv(n, p, KntVect, Pw)
 %       nb: number of segments.
 %       Qw: control points of bezier segments.
 % ---------------------------------------------------------------
-% Based on Algorithm A5.6 from ``The NURBS BOOK'' pg173.
+% Based on Algorithm A5.6 from ``The NURBS BOOK'' pg173. 《The NURBS　BOOK》第二版ｐ.126
 % -------------------------------------------------------------------------
 
 %{

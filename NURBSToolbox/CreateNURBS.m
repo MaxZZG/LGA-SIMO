@@ -10,17 +10,18 @@ function NURBS = CreateNURBS(KntVect, CtrlPts)
 %--------------------------------------------------------------------------
 % Output:
 %       NURBS: a NURBS structure, including
-%           NURBS.NDS       : number of dimensional space
-%           NURBS.KntVect   : knot vector(s) stored in cell format
-%           NURBS.uqKntVect : unique knot values of knot vector(s) in cell format
-%           NURBS.KntMult   : multiplicities of knot values
-%           NURBS.CtrlPts4D : control points co-ordinates in 4D space
-%           NURBS.CtrlPts3D : control points co-ordinates projected into 3D space
-%           NURBS.Weights   : weights of control points
-%           NURBS.Dim       : number of dimensions of the NURBS patch
-%           NURBS.NCtrlPts  : number of control points in each direction
-%           NURBS.Order     : degree of basis functions in each direction
-%           NURBS.NNP       : total number of control points, "NP" is an abbreviation for nodal points
+%           NURBS.NDS       : number of dimensional space  NURBS的维数
+%           NURBS.KntVect   : knot vector(s) stored in cell format  节点向量
+%           NURBS.uqKntVect : unique knot values of knot vector(s) in cell format  unique  节点向量
+%           NURBS.KntMult   : multiplicities of knot values  这是节点向量的重复度，节点向量挨着算重复度，每个维度的重复度
+%                                                            都存储在一维数组中
+%           NURBS.CtrlPts4D : control points co-ordinates in 4D space 控制点并且每个控制点都带有权重
+%           NURBS.CtrlPts3D : control points co-ordinates projected into 3D space xyz坐标的控制点
+%           NURBS.Weights   : weights of control points 控制点的权重
+%           NURBS.Dim       : number of dimensions of the NURBS patch  Dim = 1是线，2是面，3是体
+%           NURBS.NCtrlPts  : number of control points in each direction  控制点
+%           NURBS.Order     : degree of basis functions in each direction  每个方向基函数的次数
+%           NURBS.NNP       : total number of control points, "NP" is an abbreviation for nodal points 控制点的总个数
 %--------------------------------------------------------------------------
 
 %{
@@ -81,10 +82,8 @@ NURBS.KntMult = KntMult; % multiplicities of knot values
 NURBS.CtrlPts4D = CtrlPts; % control points in 4D space
 NURBS.CtrlPts3D = CtrlPts3D; % control points projected into 3D space
 NURBS.Weights = W;
-NURBS.Dim = Dim;
-% number of control points in each direction
+NURBS.Dim = Dim;    % number of control points in each direction
 NURBS.NCtrlPts = NCtrlPts;
-NURBS.Order = p;
-% number of total control points
+NURBS.Order = p;    % number of total control points
 NURBS.NNP = prod(NCtrlPts); %"NP" is an abbreviation for nodal points
 end
