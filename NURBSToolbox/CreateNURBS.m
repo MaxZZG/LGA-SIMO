@@ -86,5 +86,5 @@ NURBS.Dim = Dim;
 NURBS.NCtrlPts = NCtrlPts;
 NURBS.Order = p;
 % number of total control points
-NURBS.NNP = prod(NCtrlPts); %"NP" is an abbreviation for nodal points
+NURBS.NNP = prod(NCtrlPts); %"NP" is an abbreviation（缩写） for nodal points
 end
