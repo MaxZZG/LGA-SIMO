@@ -10,15 +10,15 @@ function NURBS = CreateNURBS(KntVect, CtrlPts)
 %--------------------------------------------------------------------------
 % Output:
 %       NURBS: a NURBS structure, including
-%           NURBS.NDS       : number of dimensional space
+%           NURBS.NDS       : number of dimensional space 空间维数
 %           NURBS.KntVect   : knot vector(s) stored in cell format
 %           NURBS.uqKntVect : unique knot values of knot vector(s) in cell format
 %           NURBS.KntMult   : multiplicities of knot values
 %           NURBS.CtrlPts4D : control points co-ordinates in 4D space
 %           NURBS.CtrlPts3D : control points co-ordinates projected into 3D space
 %           NURBS.Weights   : weights of control points
-%           NURBS.Dim       : number of dimensions of the NURBS patch
-%           NURBS.NCtrlPts  : number of control points in each direction
+%           NURBS.Dim       : number of dimensions of the NURBS patch NURBS维数
+%           NURBS.NCtrlPts  : number of control points in each direction 
 %           NURBS.Order     : degree of basis functions in each direction
 %           NURBS.NNP       : total number of control points, "NP" is an abbreviation for nodal points
 %--------------------------------------------------------------------------
