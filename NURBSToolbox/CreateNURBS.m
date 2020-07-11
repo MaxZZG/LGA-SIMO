@@ -4,7 +4,7 @@ function NURBS = CreateNURBS(KntVect, CtrlPts)
 % Gathering and constructing data for a NURBS patch (1D, 2D, 3D)
 %--------------------------------------------------------------------------
 % Input:
-%       KntVect: knot vectors stored in cell format
+%       KntVect: knot vectors stored in cell format %节点矢量数组，故为cell format
 %       CtrlPts: control points stored in homogenous co-ordinates, i.e. 
 % location of an arbitrary control point is identified by [x1*w1; y1*w1; z1*w1; w1]
 %--------------------------------------------------------------------------
@@ -43,10 +43,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 assert(iscell(KntVect), 'Input knots must be in cell format');
 assert(numel(KntVect) >= 1);
-assert(numel(KntVect) <= 3);
+assert(numel(KntVect) <= 3); % 节点适量数组 kntVect 有1到3个节点矢量
 Dim = numel(KntVect); % The dimensionality of the model
 for i = 1 : Dim
-    assert(size(KntVect{i}, 1) == 1)
+    assert(size(KntVect{i}, 1) == 1) % size(A,1) 返回矩阵A的行数，size(A,2) 返回列数。
     assert(numel(KntVect{i}) >= 4, ...
         'Number of knot values must be equal or greater than 4')
 end
@@ -83,7 +83,7 @@ NURBS.CtrlPts4D = CtrlPts; % control points in 4D space
 NURBS.CtrlPts3D = CtrlPts3D; % control points projected into 3D space
 NURBS.Weights = W;
 NURBS.Dim = Dim;    % number of control points in each direction
-NURBS.NCtrlPts = NCtrlPts;
+NURBS.NCtrlPts = NCtrlPts; % 各方向控制点总数，数组
 NURBS.Order = p;    % number of total control points
 NURBS.NNP = prod(NCtrlPts); %"NP" is an abbreviation for nodal points
 end
