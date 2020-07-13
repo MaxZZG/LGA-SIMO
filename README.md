@@ -28,6 +28,6 @@ SIMO-Package is a basic NURBS-based IsoGeometric Analysis package written in MAT
 * Hien Van Do
 * Hoang Xuan Nguyen
 
-## HXwang，Frank Wang，Max Zhang
- We add annotations to code together
- 我们一起给代码添加中文注释
+## HSwang，Frank Wang，Max Zhang
+-  We add annotations to code together
+-  我们一起给代码添加中文注释
