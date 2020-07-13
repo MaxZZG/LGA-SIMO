@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
-if strcmp(lab, 'ScalarField')
+if strcmp(lab, 'ScalarField') % 为什么标量域的Dof为1，以下同问，
     Dof = 1; % number of degree of freedom
 elseif strcmp(lab, 'VectorField')
     Dof = 2;
@@ -41,7 +41,7 @@ end
 %        13 14 15 16
 % for a 4x2x2 control points
 
-chan  = zeros(NURBS.NCtrlPts(2), NURBS.NCtrlPts(1));
+chan  = zeros(NURBS.NCtrlPts(2), NURBS.NCtrlPts(1)); % 网格控制点编号，得到索引
 
 count = 1;
 for i = 1 : NURBS.NCtrlPts(2)
@@ -81,7 +81,7 @@ for iEta = 1 : NElDir(2)
         end
         iE = iE + 1;
     end
-end
+end % 以上生成单元控制点索引数组，（connectivity Array）
 
 Mesh.Dof = Dof;
 Mesh.El = El; % element connection
@@ -92,22 +92,22 @@ Mesh.NDof = NURBS.NNP * Dof; % number of dof
 
 mcp = NURBS.NCtrlPts(1);
 ncp = NURBS.NCtrlPts(2);
-
+% 网格边界 i 上的控制点索引
 Mesh.Boundary(1).CompDofs{1} = sub2ind([mcp, ncp], ones(1, ncp), 1 : ncp)';
 Mesh.Boundary(2).CompDofs{1} = sub2ind([mcp, ncp], mcp * ones(1, ncp), 1 : ncp)';
 Mesh.Boundary(3).CompDofs{1} = sub2ind([mcp, ncp], 1 : mcp, ones(1, mcp))';
 Mesh.Boundary(4).CompDofs{1} = sub2ind([mcp, ncp], 1 : mcp, ncp * ones(1, mcp))';
-
+% 网格边界 i 下一层上的控制点索引
 Mesh.Boundary(1).NextLayerDofs.CompDofs{1} = sub2ind([mcp, ncp], 2 * ones(1, ncp), 1 : ncp)';
 Mesh.Boundary(2).NextLayerDofs.CompDofs{1} = sub2ind([mcp, ncp], (mcp - 1) * ones(1, ncp), 1 : ncp)';
 Mesh.Boundary(3).NextLayerDofs.CompDofs{1} = sub2ind([mcp, ncp], 1 : mcp, 2 * ones(1, mcp))';
 Mesh.Boundary(4).NextLayerDofs.CompDofs{1} = sub2ind([mcp, ncp], 1 : mcp, (ncp - 1) * ones(1, mcp))';
 
 for iSide = 1 : 4
-    ind = mod(floor((iSide + 1) / 2), 2) + 1;
+    ind = mod(floor((iSide + 1) / 2), 2) + 1; % 判断NURBS参数方向
     Mesh.Boundary(iSide).NDof = NURBS.NCtrlPts(ind) * Dof;
     
-    if Dof == 2 % vector field
+    if Dof == 2 % vector field % 以下不太懂，问题回到Dof = 2 ？
         Mesh.Boundary(iSide).Dofs = [Mesh.Boundary(iSide).CompDofs{1}; Mesh.Boundary(iSide).CompDofs{1} + NURBS.NNP];
         Mesh.Boundary(iSide).CompDofs{2} = Mesh.Boundary(iSide).CompDofs{1} + NURBS.NNP;
         Mesh.Boundary(iSide).NextLayerDofs.CompDofs{2} = Mesh.Boundary(iSide).NextLayerDofs.CompDofs{1} + NURBS.NNP;
