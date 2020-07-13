@@ -1,16 +1,18 @@
 function [f, d, FreeIdcs] = applyDrchltBdryVals(BdryIdcs, BdryVals, K, f)
 % function [f, d, freeIdcs] = applyDrchltBdryVals(BdryIdcs, BdryVals, K, f)
 % Apply boundary values for Dirichlet boundary condition
+% 施加狄利克雷边界条件，例如位移、扭转等。在数学中狄利克雷边界条件是指微分方程的解在边界处的值。
+% 
 % ----------------------------------------------------------------
 % Input: 
-%       BdryIdcs: indices of boundary control points
-%       BdryVals: corresponding values at these control points
-%       K: global stiffness matrix
-%       f: force vector (right hand side)
+%       BdryIdcs: indices of boundary control points   要操作的边界控制点的索引
+%       BdryVals: corresponding values at these control points    这些控制点对应的值，通过最小二乘拟合方法算出的值
+%       K: global stiffness matrix     总刚矩阵
+%       f: force vector (right hand side)  力向量（右手坐标系）
 % Output:
-%       f: modified force vector
-%       d: displacement vector
-%       freeIdcs: vector contains indices of unknowns
+%       f: modified force vector  修正的力向量
+%       d: displacement vector    位移向量
+%       freeIdcs: vector contains indices of unknowns   自由控制点索引?
 % -----------------------------------------------------------------
 
 %{
@@ -31,8 +33,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 NDof = numel(f);
-FreeIdcs = setdiff(1 : NDof, BdryIdcs);
-d = zeros(NDof, 1);
-d(BdryIdcs) = BdryVals;
-f(FreeIdcs) = f(FreeIdcs) - K(FreeIdcs, BdryIdcs) * BdryVals; 
+FreeIdcs = setdiff(1 : NDof, BdryIdcs);		% 除了边界控制点，其他的控制点
+d = zeros(NDof, 1);		% 位移的列向量
+d(BdryIdcs) = BdryVals;		% 边界条件直接加载控制点吗
+f(FreeIdcs) = f(FreeIdcs) - K(FreeIdcs, BdryIdcs) * BdryVals;  % 
 end
