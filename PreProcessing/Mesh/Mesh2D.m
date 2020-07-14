@@ -115,7 +115,7 @@ for iSide = 1 : 4
     Mesh.Boundary(iSide).NDof = NURBS.NCtrlPts(ind) * Dof;
     
     if Dof == 2 % vector field % 以下不太懂，问题回到Dof = 2 ？
-
+        % 有两个自由度分量，前一个自由度分量排在前面，后一个自由度分量排在后面
         Mesh.Boundary(iSide).Dofs = [Mesh.Boundary(iSide).CompDofs{1}; Mesh.Boundary(iSide).CompDofs{1} + NURBS.NNP];
         Mesh.Boundary(iSide).CompDofs{2} = Mesh.Boundary(iSide).CompDofs{1} + NURBS.NNP;
         Mesh.Boundary(iSide).NextLayerDofs.CompDofs{2} = Mesh.Boundary(iSide).NextLayerDofs.CompDofs{1} + NURBS.NNP;
