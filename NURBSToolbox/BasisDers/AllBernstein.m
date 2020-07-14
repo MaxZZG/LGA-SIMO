@@ -2,14 +2,14 @@ function B = AllBernstein(p, xi)
 % function B = AllBernstein(p, xi)
 %--------------------------------------------------------------------------
 % Compute all pth-order Bernstein basis functions.
-% Bezieræ›²çº¿çš„åŸºå‡½æ•°ï¼šBernstein å¤šé¡¹å¼
+% BezierÇúÏßµÄ»ùº¯Êı£ºBernstein ¶àÏîÊ½
 %--------------------------------------------------------------
 % Input:
 %      p: order of polynominal  
-%      xi: parametric points  xiæ˜¯ä¸€ä¸ªæ•°ç»„ï¼Œæ„æ€æ˜¯å¤šä¸ªå‚æ•°u
+%      xi: parametric points  xiÊÇÒ»¸öÊı×é£¬ÒâË¼ÊÇ¶à¸ö²ÎÊıu
 %--------------------------------------------------------------
 % Output:
-%      B: bernstein basis functions Bä¸ºçŸ©é˜µï¼Œæ¯ä¸ªå‚æ•°uå¯¹åº” p+1 ä¸ªBernsteinçš„å€¼
+%      B: bernstein basis functions BÎª¾ØÕó£¬Ã¿¸ö²ÎÊıu¶ÔÓ¦ p+1 ¸öBernsteinµÄÖµ
 %--------------------------------------------------------------
 % Based on Algorithm A1.3 [The NURBS BOOK, p.20]
 %--------------------------------------------------------------------------
@@ -33,8 +33,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 n = p + 1;
 B = zeros(numel(xi), n);
-Bi = zeros(n, 1); 	% Biæ˜¯è¡Œå‘é‡æˆ–è€…åˆ—å‘é‡å¹¶ä¸å½±å“ï¼Œæœ€åèµ‹å€¼ç»™Bäº†ã€‚æ„Ÿè§‰Biæœ€å¥½æ˜¯è¡Œå‘é‡ã€‚
-for jj = 1 : numel(xi)	% å‚æ•°uçš„ä¸ªæ•°ä¸ºå¾ªç¯æ¬¡æ•°
+Bi = zeros(n, 1); 	% BiÊÇĞĞÏòÁ¿»òÕßÁĞÏòÁ¿²¢²»Ó°Ïì£¬×îºó¸³Öµ¸øBÁË¡£¸Ğ¾õBi×îºÃÊÇĞĞÏòÁ¿¡£
+for jj = 1 : numel(xi)	% ²ÎÊıuµÄ¸öÊıÎªÑ­»·´ÎÊı
     Bi(1) = 1;
     u1 = 1 - xi(jj);
     for j = 2 : n
@@ -46,6 +46,6 @@ for jj = 1 : numel(xi)	% å‚æ•°uçš„ä¸ªæ•°ä¸ºå¾ªç¯æ¬¡æ•°
         end
         Bi(j) = saved;
     end
-    B (jj, :) = Bi; % B ç¬¬jjè¡Œ = Bi Biä¸ºåˆ—å‘é‡ï¼Œèµ‹å€¼æ—¶ä¼šå°†ä¸€æ•´åˆ—èµ‹å€¼ç»™Bè§„å®šçš„è¡Œé‡Œã€‚
+    B (jj, :) = Bi; % B µÚjjĞĞ = Bi BiÎªÁĞÏòÁ¿£¬¸³ÖµÊ±»á½«Ò»ÕûÁĞ¸³Öµ¸øB¹æ¶¨µÄĞĞÀï¡£
 end
 end

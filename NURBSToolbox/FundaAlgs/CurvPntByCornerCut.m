@@ -2,7 +2,7 @@ function Cw = CurvPntByCornerCut(n, p, KntVect, Pw, Knt)
 % Cw = CurvPntByCornerCut(n, p, KntVect, Pw, Knt)
 % -------------------------------------------------------------------------
 % Compute point on rational B-spline curve
-% è®¡ç®— knt å¤„æœ‰ç†Bæ ·æ¡æ›²çº¿çš„æ§åˆ¶ç‚¹ï¼Œé€šè¿‡å‰²è§’çš„æ–¹å¼
+% ¼ÆËã knt ´¦ÓĞÀíBÑùÌõÇúÏßµÄ¿ØÖÆµã£¬Í¨¹ı¸î½ÇµÄ·½Ê½
 % ---------------------------------------------------------------
 % Input:
 %       n: number of basis functions
@@ -14,7 +14,7 @@ function Cw = CurvPntByCornerCut(n, p, KntVect, Pw, Knt)
 % Output:
 %       Cw: new control points
 % ---------------------------------------------------------------
-% Based on Algorithm A5.2 [The NURBS BOOK, p.153].[éå‡åŒ€æœ‰ç†Bæ ·æ¡ï¼ˆç¬¬2ç‰ˆï¼‰, p.112]
+% Based on Algorithm A5.2 [The NURBS BOOK, p.153].[·Ç¾ùÔÈÓĞÀíBÑùÌõ£¨µÚ2°æ£©, p.112]
 % -------------------------------------------------------------------------
 
 %{

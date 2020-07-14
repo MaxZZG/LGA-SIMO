@@ -4,6 +4,8 @@ function idx = FindSpan(n, p, pts, KntVect)
 % Determine the knot span index
 % ie. find i if knot(j) lies in the half-open interval 
 % [knot(i), knot(i + 1)), i = 1, 2,...,n.
+% 这个函数用来找到非零的基函数局部支集，返回的是节点向量的索引
+% 因为其他部分的基函数都为零，没必要计算
 %----------------------------------------------------------
 % Input:
 %    n: number of control points (or basis functions)
@@ -14,7 +16,7 @@ function idx = FindSpan(n, p, pts, KntVect)
 % Output:
 %    idx: knot span index
 %----------------------------------------------------------
-% Based on Algorithm A2.1 [The NURBS BOOK, p.68]
+% Based on Algorithm A2.1 [The NURBS BOOK, p.68]  《非均匀有理B样条》 p.49
 %----------------------------------------------------------
 
 %{
