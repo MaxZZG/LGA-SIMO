@@ -2,6 +2,7 @@ function ONURBS = NURBSExtrude(INURBS, DisplVect)
 % ONURBS = NURBSExtrude(INURBS, DisplVect)
 % --------------------------------------------------------------------
 % Construct a NURBS surface (volume) by extruding a NURBS curve (surface)
+% 将NURBS线拉伸成面，或者将NURBS面拉伸成体
 % ----------------------------------------------------------------------
 % Input:
 %       INURBS: input NURBS structure

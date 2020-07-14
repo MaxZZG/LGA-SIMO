@@ -5,7 +5,7 @@ function N0 = BasisFuns(Idx, Pts, p, KntVect)
 % 计算参数点处的非零b样条基函数，Pts为数组，一次计算多个参数点。
 %---------------------------------------------------------------
 % Input:
-%      idx: knot span index
+%      idx: knot span index 
 %      pts: parametric points
 %      p: order of basis
 %      KntVect: knot vector
@@ -33,7 +33,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
-N0 = zeros(numel(Pts), p + 1);
+N0 = zeros(numel(Pts), p + 1);  
 for i = 1 : numel(Pts)
     
     index = Idx(i);

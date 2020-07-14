@@ -2,6 +2,7 @@ function s = FindMult(Knt, KntVect)
 % s = FindMult(Knt, KntVect)
 % -------------------------------------------------------------------------
 % Find the multiplicity of a knot value
+% 找到值为knt的节点向量的重复度
 % -------------------------------------------------------------------------
 % Input:
 %       Knt: knot value
