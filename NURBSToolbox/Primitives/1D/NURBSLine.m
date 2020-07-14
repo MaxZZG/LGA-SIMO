@@ -28,7 +28,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
-CtrlPts = zeros(4, 2);
+CtrlPts = zeros(4, 2); % CtrlPts 表示带权控制点 集
 CtrlPts(1 : numel(P1), 1) = P1;
 CtrlPts(1 : numel(P2), 2) = P2;
 CtrlPts(4, :) = 1;

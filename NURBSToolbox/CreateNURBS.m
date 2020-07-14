@@ -13,8 +13,7 @@ function NURBS = CreateNURBS(KntVect, CtrlPts)
 %           NURBS.NDS       : number of dimensional space  NURBS的维数
 %           NURBS.KntVect   : knot vector(s) stored in cell format  节点向量
 %           NURBS.uqKntVect : unique knot values of knot vector(s) in cell format  unique  节点向量
-%           NURBS.KntMult   : multiplicities of knot values  这是节点向量的重复度，节点向量挨着算重复度，每个维度的重复度
-%                                                            都存储在一维数组中
+%           NURBS.KntMult   : multiplicities of knot values  这是节点向量的重复度
 %           NURBS.CtrlPts4D : control points co-ordinates in 4D space 控制点并且每个控制点都带有权重
 %           NURBS.CtrlPts3D : control points co-ordinates projected into 3D space xyz坐标的控制点
 %           NURBS.Weights   : weights of control points 控制点的权重
@@ -87,3 +86,4 @@ NURBS.NCtrlPts = NCtrlPts;
 NURBS.Order = p;    % number of total control points
 NURBS.NNP = prod(NCtrlPts); %"NP" is an abbreviation for nodal points
 end
+
