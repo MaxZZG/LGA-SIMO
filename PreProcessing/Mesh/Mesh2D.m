@@ -19,8 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
-
-if strcmp(lab, 'ScalarField') % 为什么标量域的Dof为1，以下同问，
+% Dof 自由度是指未知向量的分量个数 ScalarField，Plate 未知分量为1，VectorField未知分量为2
+if strcmp(lab, 'ScalarField') 
     Dof = 1; % number of degree of freedom
 elseif strcmp(lab, 'VectorField') 
     Dof = 2;
@@ -42,7 +42,7 @@ end
 %        13 14 15 16
 % for a 4x2x2 control points  (4x4)
 
-chan  = zeros(NURBS.NCtrlPts(2), NURBS.NCtrlPts(1));  % 对控制点顺序编号，沿1方向先走
+chan  = zeros(NURBS.NCtrlPts(2), NURBS.NCtrlPts(1));  % 对网格点顺序编号，沿1方向先走
 
 
 count = 1;
@@ -70,40 +70,40 @@ NEN = prod(NURBS.Order + 1); % number of local basis functions
 El = zeros(NEl, NEN);
 
 iE = 1;
-for iEta = 1 : NElDir(2) %遍历2方向单元
-    EtaConn = ElDir{2}(iEta, :); %单元控制点编号数组，又名（Connectivity Array p13 user_guide）
-    for iXi = 1 : NElDir(1) %遍历1方向单元
-        XiConn = ElDir{1}(iXi, :);%1方向单元 ixi 的控制点编号
+for iEta = 1 : NElDir(2) % 遍历2方向单元
+    EtaConn = ElDir{2}(iEta, :); % 单元网格点编号数组，又名（Connectivity Array p13 user_guide）
+    for iXi = 1 : NElDir(1) % 遍历1方向单元
+        XiConn = ElDir{1}(iXi, :);% 1方向单元 ixi 的网格点编号
         c = 1;
         for i = 1 : length(EtaConn)
             for j = 1 : length(XiConn)
-                El(iE, c) = chan(EtaConn(i), XiConn(j)); % 映射到整体的控制点编号
+                El(iE, c) = chan(EtaConn(i), XiConn(j)); % 映射到整体的网格点编号
                 c = c + 1;
             end
         end
         iE = iE + 1;
     end
 end
-% 网格所包含的参数，定义了网格的形状，所以不包括控制点的坐标，控制点坐标定义在NURBS
-Mesh.Dof = Dof; % 2D网格单点的自由度，
+% 网格所包含的参数，定义了网格的形状，所以不包括网格点的坐标，网格点坐标定义在NURBS
+Mesh.Dof = Dof; % 2D网格未知向量的分量个数 
 
 Mesh.El = El; % element connection
 Mesh.NEl = NEl; % number of elements
 Mesh.NEN = NEN; % number of local basis functions
 Mesh.NElDir = NElDir; % number of element per direction
-Mesh.NDof = NURBS.NNP * Dof; % number of dof 可以看出Dof代表每个点的自由度，空间坐标表示下，自由度最高为3
+Mesh.NDof = NURBS.NNP * Dof; % number of dof 
 
 mcp = NURBS.NCtrlPts(1);
 ncp = NURBS.NCtrlPts(2);
 
-%网格边界n（1234）上的所有控制点的编号 可能不对，CompDofs 啥意思？
+%网格边界n（1234）上的所有网格点的编号
 
 Mesh.Boundary(1).CompDofs{1} = sub2ind([mcp, ncp], ones(1, ncp), 1 : ncp)';
 Mesh.Boundary(2).CompDofs{1} = sub2ind([mcp, ncp], mcp * ones(1, ncp), 1 : ncp)';
 Mesh.Boundary(3).CompDofs{1} = sub2ind([mcp, ncp], 1 : mcp, ones(1, mcp))';
 Mesh.Boundary(4).CompDofs{1} = sub2ind([mcp, ncp], 1 : mcp, ncp * ones(1, mcp))';
 
-%网格边界n（1234）下一层上的所有控制点的编号
+%网格边界n（1234）下一层上的所有网格点的编号
 
 Mesh.Boundary(1).NextLayerDofs.CompDofs{1} = sub2ind([mcp, ncp], 2 * ones(1, ncp), 1 : ncp)';
 Mesh.Boundary(2).NextLayerDofs.CompDofs{1} = sub2ind([mcp, ncp], (mcp - 1) * ones(1, ncp), 1 : ncp)';
@@ -114,7 +114,7 @@ for iSide = 1 : 4
     ind = mod(floor((iSide + 1) / 2), 2) + 1; % 判断NURBS参数方向
     Mesh.Boundary(iSide).NDof = NURBS.NCtrlPts(ind) * Dof;
     
-    if Dof == 2 % vector field % 以下不太懂，问题回到Dof = 2 ？
+    if Dof == 2 % vector field
         % 有两个自由度分量，前一个自由度分量排在前面，后一个自由度分量排在后面
         Mesh.Boundary(iSide).Dofs = [Mesh.Boundary(iSide).CompDofs{1}; Mesh.Boundary(iSide).CompDofs{1} + NURBS.NNP];
         Mesh.Boundary(iSide).CompDofs{2} = Mesh.Boundary(iSide).CompDofs{1} + NURBS.NNP;
