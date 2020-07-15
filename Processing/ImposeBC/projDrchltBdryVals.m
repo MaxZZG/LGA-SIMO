@@ -2,7 +2,7 @@ function [Coeffs, GDofs] = projDrchltBdryVals(NURBS, Mesh, h, Refs, LAB, varargi
 % function [Coeffs, GDofs] = projDrchltBdryVals(NURBS, Mesh, h, Refs, LAB, varargin)
 % Evaluate coefficent values for imposing Dirichlet boundary condition of
 % 2D and 3D problem (project Dirichlet Boundary Values)
-% Ê¹ÓÃ×îĞ¡¶ş³ËÄâºÏ¼ÆËãÊıÖµ
+% ä½¿ç”¨æœ€å°äºŒä¹˜æ‹Ÿåˆè®¡ç®—æ•°å€¼
 % -------------------------------------------------------------------------
 % Input:
 %       NURBS: NURBS structure (single patch) or cell of NURBS structures 
@@ -10,8 +10,8 @@ function [Coeffs, GDofs] = projDrchltBdryVals(NURBS, Mesh, h, Refs, LAB, varargi
 %       Mesh: Mesh structure (single patch) or cell of Mesh structures
 %       (multiple patches)
 %       h: boundary function, Ex: h = @(x, y) a * x + b * y
-%           h = @(x, y) 0 correspond to homogeneous Dirichlet B.C  Õâ´ú±íÆë´ÎµÒÀû¿ËÀ×±ß½çÌõ¼ş
-%       Refs: referenced indices to indicate boundary curves, ±ß½çµÄË÷Òı
+%           h = @(x, y) 0 correspond to homogeneous Dirichlet B.C  è¿™ä»£è¡¨é½æ¬¡ç‹„åˆ©å…‹é›·è¾¹ç•Œæ¡ä»¶
+%       Refs: referenced indices to indicate boundary curves, è¾¹ç•Œçš„ç´¢å¼•
 %       Refs = [Ref_1, Ref_2,...,Ref_n],
 %       ******************************************************
 %       *                                                    *
@@ -36,8 +36,8 @@ function [Coeffs, GDofs] = projDrchltBdryVals(NURBS, Mesh, h, Refs, LAB, varargi
 %       - if varargin = {GNum, Boundaries}: multiple patches problem.
 % -------------------------------------------------------------------------
 % Output:
-%       GDofs: indices of degrees of freedom of the given boundary   ¸ø¶¨±ß½çµÄ×ÔÓÉ¶ÈË÷Òı
-%       Coeffs: evaluated coefficent values corresponding to these degrees  ¼ÆËã³öµÄÕâĞ©×ÔÓÉ¶ÈµÄÖµ
+%       GDofs: indices of degrees of freedom of the given boundary   ç»™å®šè¾¹ç•Œçš„è‡ªç”±åº¦ç´¢å¼•
+%       Coeffs: evaluated coefficent values corresponding to these degrees  è®¡ç®—å‡ºçš„è¿™äº›è‡ªç”±åº¦çš„å€¼
 %       of freedom
 % -------------------------------------------------------------------------
 
@@ -59,10 +59,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
 GDofs = []; GARows = []; GACols = []; GAVals = []; GFVals = []; GFIdcs = []; 
-assert(isa(h, 'function_handle'), 'h must be a function handle')  % h±ØĞëÊÇº¯Êı¾ä±ú
+assert(isa(h, 'function_handle'), 'h must be a function handle')  % hå¿…é¡»æ˜¯å‡½æ•°å¥æŸ„
 assert(ischar(LAB), 'You must specify the LABEL keyword')
 for iRef = 1 : numel(Refs) % Loop over boundaries
-    if nargin == 7 % multiple patches problem (NURBS, Mesh, h, Refs, LAB, GNum, Boundaries) narginÊÇÓÃÀ´ÅĞ¶ÏÊäÈë±äÁ¿¸öÊıµÄº¯Êı
+    if nargin == 7 % multiple patches problem (NURBS, Mesh, h, Refs, LAB, GNum, Boundaries) narginæ˜¯ç”¨æ¥åˆ¤æ–­è¾“å…¥å˜é‡ä¸ªæ•°çš„å‡½æ•°
         GNum = varargin{1};
         Boundaries = varargin{2};
         NPatches = numel(Boundaries(Refs(iRef)).Patches);
@@ -85,7 +85,7 @@ Coeffs = full(A(GDofs, GDofs) \ F(GDofs));
 end
 % ------------------------------------------------------------------------
 % ------------------------------------------------------------------------
-% Auxiliary functions ¸¨Öúº¯Êı
+% Auxiliary functions è¾…åŠ©å‡½æ•°
 % ------------------------------------------------------------------------
 % ------------------------------------------------------------------------
 function [GARows, GACols, GAVals, GFIdcs, GFVals, GDofs] =...
@@ -124,12 +124,12 @@ elseif NURBSBdry.Dim ==2
 end
 
 J = repmat(1 : MeshBdry.NEN, MeshBdry.NEN, 1);  
-% NENÊÇÍø¸ñ±ß½ç»ùº¯ÊıµÄ¸öÊı£¬
-% JµÄĞÎÊ½ÊÇ
+% NENæ˜¯ç½‘æ ¼è¾¹ç•ŒåŸºå‡½æ•°çš„ä¸ªæ•°ï¼Œ
+% Jçš„å½¢å¼æ˜¯
 % 1 2 3 4 ... NEN
 % 1 2 3 4 ... NEN
 % ...............
-% 1 2 3 4 ... NEN (µÚNENĞĞ)
+% 1 2 3 4 ... NEN (ç¬¬NENè¡Œ)
 
 I = J';
 ii = MeshBdry.El(:, I(:))';
@@ -156,8 +156,8 @@ end
 %       h: boundary function, Ex: h = @(x, y) a * x + b * y
 %           h = @(x, y) 0 correspond to homogeneous Dirichlet B.C
 % Output:
-%       LAVals: local mass matrices  ¾Ö²¿ÖÊÁ¿¾ØÕó
-%       LFVals: local force vectors  ¾Ö²¿Á¦¾ØÕó
+%       LAVals: local mass matrices  å±€éƒ¨è´¨é‡çŸ©é˜µ
+%       LFVals: local force vectors  å±€éƒ¨åŠ›çŸ©é˜µ
 
 function [LAVals, LFVals] = applyL2Proj2D(NURBS, Mesh, h)
 LAVals = [];
@@ -165,26 +165,24 @@ LFVals = [];
 [CtrlPts, Weights] = convertTo2DArrays(NURBS);
 NGPs = NURBS.Order + 1;
 [Jx, Wx, ~, Nx] = calcDersBasisFunsAtGPs(NURBS.Order, NURBS.NCtrlPts, NURBS.KntVect{1}, 1, NGPs, Mesh.NEl);
-% JxÊÇ´ÓÊµÌå¿Õ¼äµ½²ÎÊı¿Õ¼äÓ³ÉäµÄÑÅ¿É±È¾ØÕó
-% WxÊÇ¸ßË¹»ı·ÖµãµÄÈ¨ÖØ¾ØÕó
-% NxÊÇ»ùº¯Êı¼°Æäµ¼Êı
+% Jxæ˜¯ä»åŸºå‡†ç©ºé—´åˆ°å‚æ•°ç©ºé—´æ˜ å°„çš„é›…å¯æ¯”çŸ©é˜µ
+% Wxæ˜¯é«˜æ–¯ç§¯åˆ†ç‚¹çš„æƒé‡çŸ©é˜µ
+% Nxæ˜¯åŸºå‡½æ•°åŠå…¶å¯¼æ•°
 
-for e = 1 : Mesh.NElDir(1) %  Ò»¸öÍø¸ñÒ»¸öÍø¸ñµÄ½øĞĞ¼ÆËã
+for e = 1 : Mesh.NElDir(1) %  ä¸€ä¸ªç½‘æ ¼ä¸€ä¸ªç½‘æ ¼çš„è¿›è¡Œè®¡ç®—
     LA = zeros(Mesh.NEN);   
     LF = zeros(Mesh.NEN, 1);
-    for qx = 1 : NGPs
+    for qx = 1 : NGPs % å¯¹é«˜æ–¯ç‚¹è¿›è¡Œæ±‚å’Œ
         N0 = Nx(e, qx, :, 1);
         N1 = Nx(e, qx, :, 2);
-		
-        [R0, R1] = Rationalize(Weights(Mesh.El(e, :)), N0(:)', N1(:)');
-		% ÓĞÀí»¯£¬R0ÊÇNURBS»ùº¯Êı£¬R1ÊÇ¶ÔÓ¦µÄÒ»½×µ¼Êı
-		
-        % gradient of mapping from parameter space to physical space
-		% ´Ó²ÎÊı¿Õ¼äµ½ÎïÀí¿Õ¼äµÄÓ³ÉäµÄÌİ¶È
-        dxdxi = R1 * CtrlPts(Mesh.El(e, :), :);
+	
+	% æœ‰ç†åŒ–ï¼ŒR0æ˜¯NURBSåŸºå‡½æ•°ï¼ŒR1æ˜¯å¯¹åº”çš„ä¸€é˜¶å¯¼æ•°		
+        [R0, R1] = Rationalize(Weights(Mesh.El(e, :)), N0(:)', N1(:)');	
+	% ä»å‚æ•°ç©ºé—´åˆ°ç‰©ç†ç©ºé—´çš„æ˜ å°„çš„æ¢¯åº¦
+        dxdxi = R1 * CtrlPts(Mesh.El(e, :), :); % å¾—åˆ°ä¸€ä¸ªåæ ‡ç»´æ•°å¤§å°çš„è¡Œå‘é‡æ¢¯åº¦ï¼š(dx/du, dy/dv, dz/dw)
         % compute the jacobian of physical and parameter domain mapping
-		% ¼ÆËãÎïÀíºÍ²ÎÊıÓòÓ³ÉäµÄÑÅ¿É±È¾ØÕó
-        J1 = norm(dxdxi);
+		% è®¡ç®—ç‰©ç†å’Œå‚æ•°åŸŸæ˜ å°„çš„é›…å¯æ¯”çŸ©é˜µ
+        J1 = norm(dxdxi); % å¯¹å¼§é•¿è¿›è¡Œç§¯åˆ†ï¼ï¼ï¼ï¼
         LA = LA + R0' * R0 * J1 * Jx(e) * Wx(qx);
         
         Pts = R0 * CtrlPts(Mesh.El(e, :), :);
