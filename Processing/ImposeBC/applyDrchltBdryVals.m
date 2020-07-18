@@ -35,6 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 NDof = numel(f);
 FreeIdcs = setdiff(1 : NDof, BdryIdcs);		% 除了边界控制点，其他的控制点
 d = zeros(NDof, 1);		% 位移的列向量
-d(BdryIdcs) = BdryVals;		% 边界条件直接加载控制点吗
-f(FreeIdcs) = f(FreeIdcs) - K(FreeIdcs, BdryIdcs) * BdryVals;  % 
+d(BdryIdcs) = BdryVals;		% 边界条件直接加在控制点吗
+f(FreeIdcs) = f(FreeIdcs) - K(FreeIdcs, BdryIdcs) * BdryVals;  % 修正载荷矩阵 
+							% 陈涛论文《等几何分析中Dirichlet边界条件的配点施加方法》中弱形式7的矩阵表示。
 end

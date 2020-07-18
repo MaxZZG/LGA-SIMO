@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
-% Dof è‡ªç”±åº¦æ˜¯æŒ‡æœªçŸ¥å‘é‡çš„åˆ†é‡ä¸ªæ•° ScalarFieldï¼ŒPlate æœªçŸ¥åˆ†é‡ä¸º1ï¼ŒVectorFieldæœªçŸ¥åˆ†é‡ä¸º2
+% Dof ×ÔÓÉ¶ÈÊÇÖ¸Î´ÖªÏòÁ¿µÄ·ÖÁ¿¸öÊı ScalarField£¬Plate Î´Öª·ÖÁ¿Îª1£¬VectorFieldÎ´Öª·ÖÁ¿Îª2
 if strcmp(lab, 'ScalarField') 
     Dof = 1; % number of degree of freedom
 elseif strcmp(lab, 'VectorField') 
@@ -42,7 +42,7 @@ end
 %        13 14 15 16
 % for a 4x2x2 control points  (4x4)
 
-chan  = zeros(NURBS.NCtrlPts(2), NURBS.NCtrlPts(1));  % å¯¹ç½‘æ ¼ç‚¹é¡ºåºç¼–å·ï¼Œæ²¿1æ–¹å‘å…ˆèµ°
+chan  = zeros(NURBS.NCtrlPts(2), NURBS.NCtrlPts(1));  % ¶ÔÍø¸ñµãË³Ğò±àºÅ£¬ÑØ1·½ÏòÏÈ×ß
 
 
 count = 1;
@@ -70,22 +70,22 @@ NEN = prod(NURBS.Order + 1); % number of local basis functions
 El = zeros(NEl, NEN);
 
 iE = 1;
-for iEta = 1 : NElDir(2) % éå†2æ–¹å‘å•å…ƒ
-    EtaConn = ElDir{2}(iEta, :); % å•å…ƒç½‘æ ¼ç‚¹ç¼–å·æ•°ç»„ï¼Œåˆåï¼ˆConnectivity Array p13 user_guideï¼‰
-    for iXi = 1 : NElDir(1) % éå†1æ–¹å‘å•å…ƒ
-        XiConn = ElDir{1}(iXi, :);% 1æ–¹å‘å•å…ƒ ixi çš„ç½‘æ ¼ç‚¹ç¼–å·
+for iEta = 1 : NElDir(2) % ±éÀú2·½Ïòµ¥Ôª
+    EtaConn = ElDir{2}(iEta, :); % µ¥ÔªÍø¸ñµã±àºÅÊı×é£¬ÓÖÃû£¨Connectivity Array p13 user_guide£©
+    for iXi = 1 : NElDir(1) % ±éÀú1·½Ïòµ¥Ôª
+        XiConn = ElDir{1}(iXi, :);% 1·½Ïòµ¥Ôª ixi µÄÍø¸ñµã±àºÅ
         c = 1;
         for i = 1 : length(EtaConn)
             for j = 1 : length(XiConn)
-                El(iE, c) = chan(EtaConn(i), XiConn(j)); % æ˜ å°„åˆ°æ•´ä½“çš„ç½‘æ ¼ç‚¹ç¼–å·
+                El(iE, c) = chan(EtaConn(i), XiConn(j)); % Ó³Éäµ½ÕûÌåµÄÍø¸ñµã±àºÅ
                 c = c + 1;
             end
         end
         iE = iE + 1;
     end
 end
-% ç½‘æ ¼æ‰€åŒ…å«çš„å‚æ•°ï¼Œå®šä¹‰äº†ç½‘æ ¼çš„å½¢çŠ¶ï¼Œæ‰€ä»¥ä¸åŒ…æ‹¬ç½‘æ ¼ç‚¹çš„åæ ‡ï¼Œç½‘æ ¼ç‚¹åæ ‡å®šä¹‰åœ¨NURBS
-Mesh.Dof = Dof; % 2Dç½‘æ ¼æœªçŸ¥å‘é‡çš„åˆ†é‡ä¸ªæ•° 
+% Íø¸ñËù°üº¬µÄ²ÎÊı£¬¶¨ÒåÁËÍø¸ñµÄĞÎ×´£¬ËùÒÔ²»°üÀ¨Íø¸ñµãµÄ×ø±ê£¬Íø¸ñµã×ø±ê¶¨ÒåÔÚNURBS
+Mesh.Dof = Dof; % 2DÍø¸ñÎ´ÖªÏòÁ¿µÄ·ÖÁ¿¸öÊı 
 
 Mesh.El = El; % element connection
 Mesh.NEl = NEl; % number of elements
@@ -96,14 +96,14 @@ Mesh.NDof = NURBS.NNP * Dof; % number of dof
 mcp = NURBS.NCtrlPts(1);
 ncp = NURBS.NCtrlPts(2);
 
-%ç½‘æ ¼è¾¹ç•Œnï¼ˆ1234ï¼‰ä¸Šçš„æ‰€æœ‰ç½‘æ ¼ç‚¹çš„ç¼–å·
+%Íø¸ñ±ß½çn£¨1234£©ÉÏµÄËùÓĞÍø¸ñµãµÄ±àºÅ£¬¾ßÌå¿´user_guide p13µÄÍ¼¾ÍÃ÷°×ÁË
 
 Mesh.Boundary(1).CompDofs{1} = sub2ind([mcp, ncp], ones(1, ncp), 1 : ncp)';
 Mesh.Boundary(2).CompDofs{1} = sub2ind([mcp, ncp], mcp * ones(1, ncp), 1 : ncp)';
 Mesh.Boundary(3).CompDofs{1} = sub2ind([mcp, ncp], 1 : mcp, ones(1, mcp))';
 Mesh.Boundary(4).CompDofs{1} = sub2ind([mcp, ncp], 1 : mcp, ncp * ones(1, mcp))';
 
-%ç½‘æ ¼è¾¹ç•Œnï¼ˆ1234ï¼‰ä¸‹ä¸€å±‚ä¸Šçš„æ‰€æœ‰ç½‘æ ¼ç‚¹çš„ç¼–å·
+%Íø¸ñ±ß½çn£¨1234£©ÏÂÒ»²ãÉÏµÄËùÓĞÍø¸ñµãµÄ±àºÅ£¬
 
 Mesh.Boundary(1).NextLayerDofs.CompDofs{1} = sub2ind([mcp, ncp], 2 * ones(1, ncp), 1 : ncp)';
 Mesh.Boundary(2).NextLayerDofs.CompDofs{1} = sub2ind([mcp, ncp], (mcp - 1) * ones(1, ncp), 1 : ncp)';
@@ -111,11 +111,11 @@ Mesh.Boundary(3).NextLayerDofs.CompDofs{1} = sub2ind([mcp, ncp], 1 : mcp, 2 * on
 Mesh.Boundary(4).NextLayerDofs.CompDofs{1} = sub2ind([mcp, ncp], 1 : mcp, (ncp - 1) * ones(1, mcp))';
 
 for iSide = 1 : 4
-    ind = mod(floor((iSide + 1) / 2), 2) + 1; % åˆ¤æ–­NURBSå‚æ•°æ–¹å‘
+    ind = mod(floor((iSide + 1) / 2), 2) + 1; % ÅĞ¶ÏNURBS²ÎÊı·½Ïò
     Mesh.Boundary(iSide).NDof = NURBS.NCtrlPts(ind) * Dof;
     
     if Dof == 2 % vector field
-        % æœ‰ä¸¤ä¸ªè‡ªç”±åº¦åˆ†é‡ï¼Œå‰ä¸€ä¸ªè‡ªç”±åº¦åˆ†é‡æ’åœ¨å‰é¢ï¼Œåä¸€ä¸ªè‡ªç”±åº¦åˆ†é‡æ’åœ¨åé¢
+        % ÓĞÁ½¸ö×ÔÓÉ¶È·ÖÁ¿£¬Ç°Ò»¸ö×ÔÓÉ¶È·ÖÁ¿ÅÅÔÚÇ°Ãæ£¬ºóÒ»¸ö×ÔÓÉ¶È·ÖÁ¿ÅÅÔÚºóÃæ
         Mesh.Boundary(iSide).Dofs = [Mesh.Boundary(iSide).CompDofs{1}; Mesh.Boundary(iSide).CompDofs{1} + NURBS.NNP];
         Mesh.Boundary(iSide).CompDofs{2} = Mesh.Boundary(iSide).CompDofs{1} + NURBS.NNP;
         Mesh.Boundary(iSide).NextLayerDofs.CompDofs{2} = Mesh.Boundary(iSide).NextLayerDofs.CompDofs{1} + NURBS.NNP;
