@@ -41,7 +41,7 @@ t  = 0.01; % thickness
 
 % Boundary condition
 
-q = -1;
+q = -1;  % 分布力
 
 figure
 hold on
@@ -60,21 +60,22 @@ Mesh = Mesh2D(Surf, 'Plate');
 % material properties
 
 % Coupling coincide control points by global numbering
-GNum = zeros(Mesh.NDof, 1);
-gluedDofs = union(Mesh.Boundary(1).Dofs, Mesh.Boundary(2).Dofs);
-nonGludedDofs = setdiff(1 : Mesh.NDof, gluedDofs);
-GNum(nonGludedDofs) = 1 : numel(nonGludedDofs);
+% 通过全局编号耦合重合控制点
+GNum = zeros(Mesh.NDof, 1); % 全部自由度的列向量，相当于位移向量 d
+gluedDofs = union(Mesh.Boundary(1).Dofs, Mesh.Boundary(2).Dofs);  % 取1，2边界的自由度索引并且取并集，排序
+nonGludedDofs = setdiff(1 : Mesh.NDof, gluedDofs); % 非1，2边界的自由度索引，并从小到大排序
+GNum(nonGludedDofs) = 1 : numel(nonGludedDofs); % 非1，2边界的自由度索引从1开始赋值
 
-newDofs = numel(nonGludedDofs) + (1 : numel(Mesh.Boundary(1).Dofs));
-GNum(Mesh.Boundary(1).Dofs) = newDofs;
-GNum(Mesh.Boundary(2).Dofs) = newDofs;
+newDofs = numel(nonGludedDofs) + (1 : numel(Mesh.Boundary(1).Dofs));  % 1，2边界作为共同边界生成的索引，排在非1，2边界索引的后面
+GNum(Mesh.Boundary(1).Dofs) = newDofs; % 新边界索引
+GNum(Mesh.Boundary(2).Dofs) = newDofs; 
 
-GDof = numel(nonGludedDofs) + numel(newDofs);
+GDof = numel(nonGludedDofs) + numel(newDofs); % 新生成的自由度总个数
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %---------------------------PROCESSING--------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp([num2str(toc),'  Assembling the system'])
-[KVals, FVals] = calcLocalStiffnessMatricesKirchhoffPlate(Mesh, Surf, t, E, nu, q);
+[KVals, FVals] = calcLocalStiffnessMatricesKirchhoffPlate(Mesh, Surf, t, E, nu, q); 
 [Rows, Cols, Vals, ValsF] = convertToTripletStorage(Mesh, KVals, FVals);
 
 Rs = GNum(Rows);
@@ -82,7 +83,7 @@ Cs = GNum(Cols);
 % Convert triplet data to sparse matrix
 K = sparse(Rs, Cs, Vals);
 
-f = accumarray(GNum(1 : numel(ValsF)), ValsF);
+f = accumarray(GNum(1 : numel(ValsF)), ValsF);  
 
 % Impose essential boundary conditions
 disp([num2str(toc),'  Imposing essential boundary conditions'])

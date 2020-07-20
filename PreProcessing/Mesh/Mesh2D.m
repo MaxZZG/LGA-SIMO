@@ -85,7 +85,7 @@ for iEta = 1 : NElDir(2) % 遍历2方向单元
     end
 end
 % 网格所包含的参数，定义了网格的形状，所以不包括网格点的坐标，网格点坐标定义在NURBS
-Mesh.Dof = Dof; % 2D网格未知向量的分量个数 
+Mesh.Dof = Dof; % 2D网格未知向量的分量个数，例如平面问题有两个自由度，Dof = 2 
 
 Mesh.El = El; % element connection
 Mesh.NEl = NEl; % number of elements
@@ -115,7 +115,7 @@ for iSide = 1 : 4
     Mesh.Boundary(iSide).NDof = NURBS.NCtrlPts(ind) * Dof;
     
     if Dof == 2 % vector field
-        % 有两个自由度分量，前一个自由度分量排在前面，后一个自由度分量排在后面
+        % 有两个自由度分量，前一个自由度分量排在前面,例如是x方向自由度，后一个自由度分量排在后面,例如y方向自由度
         Mesh.Boundary(iSide).Dofs = [Mesh.Boundary(iSide).CompDofs{1}; Mesh.Boundary(iSide).CompDofs{1} + NURBS.NNP];
         Mesh.Boundary(iSide).CompDofs{2} = Mesh.Boundary(iSide).CompDofs{1} + NURBS.NNP;
         Mesh.Boundary(iSide).NextLayerDofs.CompDofs{2} = Mesh.Boundary(iSide).NextLayerDofs.CompDofs{1} + NURBS.NNP;

@@ -10,34 +10,31 @@ function NURBS = CreateNURBS(KntVect, CtrlPts)
 %--------------------------------------------------------------------------
 % Output:
 
-%       NURBS: a NURBS structure, including			% NURBSçš„æ•°æ®ç»“æ„
-%           NURBS.NDS       : number of dimensional space  NURBSçš„ç»´æ•°
-%           NURBS.KntVect   : knot vector(s) stored in cell format  èŠ‚ç‚¹å‘é‡
-%           NURBS.uqKntVect : unique knot values of knot vector(s) in cell format  unique  èŠ‚ç‚¹å‘é‡
-%           NURBS.KntMult   : multiplicities of knot values  è¿™æ˜¯èŠ‚ç‚¹å‘é‡çš„é‡å¤åº¦ï¼ŒèŠ‚ç‚¹å‘é‡æŒ¨ç€ç®—é‡å¤åº¦ï¼Œæ¯ä¸ªç»´åº¦çš„é‡å¤åº¦
-%                                                            éƒ½å­˜å‚¨åœ¨ä¸€ç»´æ•°ç»„ä¸­
-%           NURBS.CtrlPts4D : control points co-ordinates in 4D space æ§åˆ¶ç‚¹å¹¶ä¸”æ¯ä¸ªæ§åˆ¶ç‚¹éƒ½å¸¦æœ‰æƒé‡
-%           NURBS.CtrlPts3D : control points co-ordinates projected into 3D space xyzåæ ‡çš„æ§åˆ¶ç‚¹
-%           NURBS.Weights   : weights of control points æ§åˆ¶ç‚¹çš„æƒé‡
-%           NURBS.Dim       : number of dimensions of the NURBS patch  Dim = 1æ˜¯çº¿ï¼Œ2æ˜¯é¢ï¼Œ3æ˜¯ä½“
-%           NURBS.NCtrlPts  : number of control points in each direction  æ§åˆ¶ç‚¹
-%           NURBS.Order     : degree of basis functions in each direction  æ¯ä¸ªæ–¹å‘åŸºå‡½æ•°çš„æ¬¡æ•°
-%           NURBS.NNP       : total number of control points, "NP" is an abbreviation for nodal points  æ§åˆ¶ç‚¹çš„æ€»ä¸ªæ•°
+%       NURBS: a NURBS structure, including			% NURBSµÄÊı¾İ½á¹¹
+%           NURBS.NDS       : number of dimensional space  NURBSµÄÎ¬Êı
+%           NURBS.KntVect   : knot vector(s) stored in cell format  ½ÚµãÏòÁ¿
+%           NURBS.uqKntVect : unique knot values of knot vector(s) in cell format  unique  ½ÚµãÏòÁ¿
+%           NURBS.KntMult   : multiplicities of knot values  ÕâÊÇ½ÚµãÏòÁ¿µÄÖØ¸´¶È£¬½ÚµãÏòÁ¿°¤×ÅËãÖØ¸´¶È£¬Ã¿¸öÎ¬¶ÈµÄÖØ¸´¶È
+%                                                            ¶¼´æ´¢ÔÚÒ»Î¬Êı×éÖĞ
+%           NURBS.CtrlPts4D : control points co-ordinates in 4D space ¿ØÖÆµã²¢ÇÒÃ¿¸ö¿ØÖÆµã¶¼´øÓĞÈ¨ÖØ
+%           NURBS.CtrlPts3D : control points co-ordinates projected into 3D space xyz×ø±êµÄ¿ØÖÆµã
+%           NURBS.Weights   : weights of control points ¿ØÖÆµãµÄÈ¨ÖØ
+%           NURBS.Dim       : number of dimensions of the NURBS patch  Dim = 1ÊÇÏß£¬2ÊÇÃæ£¬3ÊÇÌå
+%           NURBS.NCtrlPts  : number of control points in each direction  ¿ØÖÆµã
+%           NURBS.Order     : degree of basis functions in each direction  Ã¿¸ö·½Ïò»ùº¯ÊıµÄ´ÎÊı
+%           NURBS.NNP       : total number of control points, "NP" is an abbreviation for nodal points  ¿ØÖÆµãµÄ×Ü¸öÊı
 %--------------------------------------------------------------------------
 
 %{
 Copyright (C) <2014-2016>  <Khanh Chau-Nguyen, Hung Nguyen-Xuan>
-
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
-
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
@@ -88,4 +85,3 @@ NURBS.NCtrlPts = NCtrlPts;
 NURBS.Order = p;    % number of total control points
 NURBS.NNP = prod(NCtrlPts); %"NP" is an abbreviation for nodal points
 end
-

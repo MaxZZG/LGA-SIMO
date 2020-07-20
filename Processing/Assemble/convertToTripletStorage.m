@@ -39,7 +39,20 @@ I = J';
 if Mesh.Dof == 1
     ElConn = Mesh.El;
 elseif Mesh.Dof == 2
-    ElConn = [Mesh.El, Mesh.El + Mesh.NDof / Mesh.Dof];
+    ElConn = [Mesh.El, Mesh.El + Mesh.NDof / Mesh.Dof]; % 这是Control Point Connectivities矩阵加上自由度之后的索引矩阵
+%   比如说Control Point Connectivities索引矩阵为
+%   1 2 3 6 7 8 11 12 13
+%   2 3 4 7 8 9 12 13 14  
+%   ...
+%   ...............24 25
+%   那么 EIConn即为
+%   1 2 3 6 7 8 11 12 13 26 27 28 ... 36
+%   2 3 4 7 8 9 12 13 14 ...
+%   ...
+%   ...............24 25 .............50
+%   
+%   这样EIConn就可以表示自由度索引与网格的关系了
+
 elseif Mesh.Dof == 3
     ElConn = [Mesh.El, Mesh.El + Mesh.NDof / Mesh.Dof, Mesh.El + Mesh.NDof / Mesh.Dof * 2];
 end
@@ -52,6 +65,6 @@ varargout{3} = KVals(:); % Vals
 if (nargin == 3)
     kk = ElConn';
     FVals = varargin{1};
-    varargout{4} = accumarray(kk(:), FVals(:)); % F
+    varargout{4} = accumarray(kk(:), FVals(:)); % F 
 end
 end
