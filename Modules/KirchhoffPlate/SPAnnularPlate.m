@@ -70,20 +70,20 @@ newDofs = numel(nonGludedDofs) + (1 : numel(Mesh.Boundary(1).Dofs));  % 1，2边界
 GNum(Mesh.Boundary(1).Dofs) = newDofs; % 新边界索引
 GNum(Mesh.Boundary(2).Dofs) = newDofs; 
 
-GDof = numel(nonGludedDofs) + numel(newDofs); % 新生成的自由度总个数
+GDof = numel(nonGludedDofs) + numel(newDofs); % 新生成的自由度总个数，这样来看自由度索引是变少了
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %---------------------------PROCESSING--------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp([num2str(toc),'  Assembling the system'])
-[KVals, FVals] = calcLocalStiffnessMatricesKirchhoffPlate(Mesh, Surf, t, E, nu, q); 
-[Rows, Cols, Vals, ValsF] = convertToTripletStorage(Mesh, KVals, FVals);
+[KVals, FVals] = calcLocalStiffnessMatricesKirchhoffPlate(Mesh, Surf, t, E, nu, q); % FVals 是体力，矩阵大小为[NEN, NEL]，基函数个数，网格数量
+[Rows, Cols, Vals, ValsF] = convertToTripletStorage(Mesh, KVals, FVals);  % KVals是刚度，大小为[NEN ^ 2, NEL]，与控制点无关
 
-Rs = GNum(Rows);
+Rs = GNum(Rows);  % 这是将原来的索引转换成全局重新编号之后的索引
 Cs = GNum(Cols);
 % Convert triplet data to sparse matrix
-K = sparse(Rs, Cs, Vals);
+K = sparse(Rs, Cs, Vals);  % 所以刚度矩阵也变成了全局重新编号之后的刚度矩阵
 
-f = accumarray(GNum(1 : numel(ValsF)), ValsF);  
+f = accumarray(GNum(1 : numel(ValsF)), ValsF); % 这是按照新自由度进行计算的 
 
 % Impose essential boundary conditions
 disp([num2str(toc),'  Imposing essential boundary conditions'])
@@ -93,21 +93,21 @@ cp1 = Mesh.Boundary(1).Dofs;
 cp2 = Mesh.Boundary(1).NextLayerDofs.CompDofs{1};
 cp3 = Mesh.Boundary(2).NextLayerDofs.CompDofs{1};
 coupledNodes1 = [cp3 cp1; cp1 cp2];
-coupledNodes2 = findConn(Surf, 0.25, 1);
+coupledNodes2 = findConn(Surf, 0.25, 1); % 最后一个参数代表第几号边界的节点向量，即1代表1方向的的节点向量，0.25代表参数点
 coupledNodes3 = findConn(Surf, 0.5, 1);
 coupledNodes4 = findConn(Surf, 0.75, 1);
 
 w = 1e7;
 penaltyStiffness = w*[1 -1;-1 1];
-coupledNodes = [coupledNodes1; coupledNodes2; coupledNodes3; coupledNodes4];
+coupledNodes = [coupledNodes1; coupledNodes2; coupledNodes3; coupledNodes4];  % 这为什么是四个耦合点组呢？因为生成的环有四个内部边界是断开的.破案成功
 for i = 1 : size(coupledNodes, 1)
-    sctr  = GNum(coupledNodes(i, :))';
+    sctr  = GNum(coupledNodes(i, :))'; % 同样使用新索引
 
-    K(sctr,sctr) = K(sctr,sctr) + penaltyStiffness;
+    K(sctr,sctr) = K(sctr,sctr) + penaltyStiffness; % 罚函数法耦合边界？？
 end
 
 % Inner curve
-[u3, Dofs3] = projDrchltBdryVals(Surf, Mesh, h, 3, 'PLATE', GNum);
+[u3, Dofs3] = projDrchltBdryVals(Surf, Mesh, h, 3, 'PLATE', GNum);  % 对两个边界进行固定约束
 % Outer curve
 [u4, Dofs4] = projDrchltBdryVals(Surf, Mesh, h, 4, 'PLATE', GNum);
 
