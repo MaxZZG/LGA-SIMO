@@ -6,7 +6,7 @@ function ONURBS = KRefine(INURBS, NEl, Order, Continuity)
 % -----------------------------------------------------------------
 % Input:
 %       INURBS: input NURBS structure
-%       NEl: number of elements per direction
+%       NEl: number of elements per direction % 每个单元再细化为多少个单元
 %       Order: order of basis functions per direction
 %       Continuity: continuity of basis functions per direction
 % -------------------------------------------------------------
@@ -52,17 +52,17 @@ for Dir = 1 : ONURBS.Dim
     Mlts = ONURBS.KntMult{Dir};
     N = NEl(Dir);
     % compute the number of knots to be inserted
-    deltaXi = diff(Knts) / N;
+    deltaXi = diff(Knts) / N;% diff相邻元素的差分
     Knts = Knts(1 : end - 1);
     
-    Xi = repmat(Knts', 1, N);
+    Xi = repmat(Knts', 1, N);% N个knts列向量
     step = 1 : N - 1;
-    Xi(:, 2 : end) = Xi(:, 2 : end) + deltaXi' * step;
+    Xi(:, 2 : end) = Xi(:, 2 : end) + deltaXi' * step;%每一行，为每个单元待插入的节点
     
     Mlts = Mlts(1 : end - 1);
-    repsMat = zeros(numel(Mlts), N);
-    repsMat(:, 1) = ONURBS.Order(Dir) - Continuity(Dir) - Mlts;
-    repsMat(:, 2 : end) = ONURBS.Order(Dir) - Continuity(Dir);
+    repsMat = zeros(numel(Mlts), N); 
+    repsMat(:, 1) = ONURBS.Order(Dir) - Continuity(Dir) - Mlts;% 原节点的重复度
+    repsMat(:, 2 : end) = ONURBS.Order(Dir) - Continuity(Dir); % 新插入的节点的重复度
     
     Knts = reshape(Xi', 1, []);
     repsVect = reshape(repsMat', 1, []);
@@ -71,14 +71,14 @@ for Dir = 1 : ONURBS.Dim
     repsVect = repsVect(2 : end);
     
     insKnts = Knts(repsVect > 0); % inserted knots
-    repsVect = repsVect(repsVect > 0);
+    repsVect = repsVect(repsVect > 0); % 构造出新的非重节点向量，和重复度向量
     
     Idx = zeros(1, sum(repsVect));
-    Idx(cumsum([1 repsVect(1 : end - 1)])) = 1;
-    Idx = cumsum(Idx);
+    Idx(cumsum([1 repsVect(1 : end - 1)])) = 1;% 设置每个节点的起点
+    Idx = cumsum(Idx);% 构造索引
     
     if ~isempty(insKnts)
-        KntsMult = insKnts(Idx);
+        KntsMult = insKnts(Idx); % 获取含重的节点向量
         % insert multiple knots
         ONURBS = HRefine(ONURBS, Dir, KntsMult);
     end
