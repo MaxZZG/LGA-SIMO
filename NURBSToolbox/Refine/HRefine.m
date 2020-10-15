@@ -38,13 +38,13 @@ else
         Dirs = 1 : INURBS.Dim + 1;
         Dirs(Dir + 1) = [];
         Dirs = [Dirs, Dir + 1];
-        tmp = permute(INURBS.CtrlPts4D, Dirs);
+        tmp = permute(INURBS.CtrlPts4D, Dirs); % 重排，使目标维数置于最后
     else
         tmp = INURBS.CtrlPts4D;
     end
     dim = size(tmp);
     tmp = reshape(tmp, [], dim(end));
-    
+    % 将其余维度看成一个坐标点，运用曲线的算法
     [KntVect, CtrlPts] = RefineKntVectCurv(INURBS.Order(Dir), INURBS.KntVect{Dir}, tmp, InsKnts);
     
     CtrlPts = reshape(CtrlPts, [dim(1 : end - 1), size(CtrlPts, 2)]);
