@@ -21,16 +21,17 @@ clc
 
 % control points
 
-CtrlPts = zeros(4, 4);
-CtrlPts(1 : 3, 1) = [0; 0; 0];
-CtrlPts(1 : 3, 2) = [2; 0; 0];
-CtrlPts(1 : 3, 3) = [1; sqrt(3); 0];
-CtrlPts(1 : 3, 4) = [3; sqrt(3); 0];
+CtrlPts = zeros(5, 4);
+CtrlPts(1 : 2, 1) = [0; 1];
+CtrlPts(1 : 2, 2) = [1; 2];
+CtrlPts(1 : 2, 3) = [2; 1];
+CtrlPts(1 : 2, 4) = [3; 4];
+CtrlPts(1 : 2, 5) = [4; 2];
 
 CtrlPts(4, :) = 1;
 
-W = [0.1, 0.5, 1, 3];
-Knts = [0 0 0 0.5 1 1 1];
+W = [1, 1, 1, 1];
+Knts = [0 0 0 0 0.5 1 1 1 1];
 
 Curv = cell(numel(W), 1);
 
@@ -54,3 +55,21 @@ for i = 1 : numel(W)
     PlotCtrlNet(Curv{i})
 end
 
+
+hold on 
+
+n = 4;
+m = 0;
+CP = zeros(n+1,m+1,4);
+
+CP(1,1,:) = [0,1,0,1];
+CP(2,1,:) = [1,2,0,1];
+CP(3,1,:) = [2,1,0,1];
+CP(4,1,:) = [3,4,0,1];
+CP(5,1,:) = [4,2,0,1];
+
+Tsurface = T_Surface(CP);
+Tsurface.plotSurf;
+
+daspect([1 1 1])
+axis equal

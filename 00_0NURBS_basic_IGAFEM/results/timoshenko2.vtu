@@ -1,0 +1,76 @@
+<VTKFile type="UnstructuredGrid"  version="0.1"   > 
+<UnstructuredGrid> 
+<Piece  NumberOfPoints="  15" NumberOfCells=" 8"> 
+<Points> 
+<DataArray  type="Float64"  NumberOfComponents="3"  format="ascii" > 
+0.000000 -6.000000 0.0 
+14.000000 -6.000000 0.0 
+24.000000 -6.000000 0.0 
+34.000000 -6.000000 0.0 
+48.000000 -6.000000 0.0 
+0.000000 0.000000 0.0 
+14.000000 0.000000 0.0 
+24.000000 0.000000 0.0 
+34.000000 0.000000 0.0 
+48.000000 0.000000 0.0 
+0.000000 6.000000 0.0 
+14.000000 6.000000 0.0 
+24.000000 6.000000 0.0 
+34.000000 6.000000 0.0 
+48.000000 6.000000 0.0 
+</DataArray> 
+</Points> 
+<Cells> 
+<DataArray  type="Int32"  Name="connectivity"  format="ascii"> 
+0 1 6 5 
+1 2 7 6 
+2 3 8 7 
+3 4 9 8 
+5 6 11 10 
+6 7 12 11 
+7 8 13 12 
+8 9 14 13 
+</DataArray> 
+<DataArray  type="Int32"  Name="offsets"  format="ascii"> 
+4 
+8 
+12 
+16 
+20 
+24 
+28 
+32 
+</DataArray> 
+<DataArray  type="UInt8"  Name="types"  format="ascii"> 
+9 
+9 
+9 
+9 
+9 
+9 
+9 
+9 
+</DataArray> 
+</Cells> 
+<PointData  Vectors="U"> 
+<DataArray  type="Float64"  Name="U" NumberOfComponents="3" format="ascii"> 
+-2031.72   -609.515   -295.136   
+-1353.89   98.595   -123.467   
+-1057.9   -44.7297   -53.393   
+-571.682   3.44704   4.33746   
+-103.662   -9.24369   -29.3895   
+7.26028e-13   2.17808e-13   -188.456   
+2.41265e-12   3.9764e-12   -291.398   
+2.7254e-12   1.3828e-11   -161.566   
+-1.38504e-12   2.83709e-12   -125.07   
+-3.9764e-12   -2.07086e-11   -193.986   
+2031.72   609.515   -295.136   
+1353.89   -98.595   -123.467   
+1057.9   44.7297   -53.393   
+571.682   -3.44704   4.33746   
+103.662   9.24369   -29.3895   
+</DataArray> 
+</PointData> 
+</Piece> 
+</UnstructuredGrid> 
+</VTKFile> 

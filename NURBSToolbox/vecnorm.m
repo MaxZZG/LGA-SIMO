@@ -1,4 +1,4 @@
-function nvec = vecnorm(vec)
+function nvec = vecNorm(vec)
 % 
 % VECNORM: Normalise the vectors.
 % 

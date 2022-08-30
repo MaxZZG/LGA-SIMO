@@ -23,33 +23,38 @@ clc
 
 CtrlPts = zeros(3, 4, 5);
 
-CtrlPts(1 : 3, 1, 1) = [0; 0; 0];
-CtrlPts(1 : 3, 2, 1) = [1/3; 0; 0];
-CtrlPts(1 : 3, 3, 1) = [2/3; 0; 0];
-CtrlPts(1 : 3, 4, 1) = [1; 0; 0];
+CtrlPts(1 : 3, 1, 1) = [0; 0; 1];
+CtrlPts(1 : 3, 2, 1) = [1; 0; 0];
+CtrlPts(1 : 3, 3, 1) = [2; 0; 0];
+CtrlPts(1 : 3, 4, 1) = [3; 0; 0];
+CtrlPts(1 : 3, 5, 1) = [4; 0; 0];
 
-CtrlPts(1 : 3, 1, 2) = [0; 1/4; 0];
-CtrlPts(1 : 3, 2, 2) = [1/3; 1/4; 1/4];
-CtrlPts(1 : 3, 3, 2) = [2/3; 1/4; 0];
-CtrlPts(1 : 3, 4, 2) = [1; 1/4; 0];
+CtrlPts(1 : 3, 1, 2) = [0; 1; 0];
+CtrlPts(1 : 3, 2, 2) = [1; 1; 1];
+CtrlPts(1 : 3, 3, 2) = [2; 1; 1];
+CtrlPts(1 : 3, 4, 2) = [3; 1; 1];
+CtrlPts(1 : 3, 5, 2) = [4; 1; 0];
 
-CtrlPts(1 : 3, 1, 3) = [0; 2/4; 0];
-CtrlPts(1 : 3, 2, 3) = [1/3; 2/4; 1/4];
-CtrlPts(1 : 3, 3, 3) = [2/3; 2/4; 0];
-CtrlPts(1 : 3, 4, 3) = [1; 2/4; 0];
+CtrlPts(1 : 3, 1, 3) = [0; 2; 0];
+CtrlPts(1 : 3, 2, 3) = [1; 2; 1];
+CtrlPts(1 : 3, 3, 3) = [2; 2; 1];
+CtrlPts(1 : 3, 4, 3) = [3; 2; 1];
+CtrlPts(1 : 3, 5, 3) = [4; 2; 0];
 
-CtrlPts(1 : 3, 1, 4) = [0; 3/4; 0];
-CtrlPts(1 : 3, 2, 4) = [1/3; 3/4; 0];
-CtrlPts(1 : 3, 3, 4) = [2/3; 3/4; 0];
-CtrlPts(1 : 3, 4, 4) = [1; 3/4; 0];
+CtrlPts(1 : 3, 1, 4) = [0; 3; 0];
+CtrlPts(1 : 3, 2, 4) = [1; 3; 1];
+CtrlPts(1 : 3, 3, 4) = [2; 3; 1];
+CtrlPts(1 : 3, 4, 4) = [3; 3; 1];
+CtrlPts(1 : 3, 5, 4) = [4; 3; 0];
 
-CtrlPts(1 : 3, 1, 5) = [0; 1; 0];
-CtrlPts(1 : 3, 2, 5) = [1/3; 1; 0];
-CtrlPts(1 : 3, 3, 5) = [2/3; 1; 0];
-CtrlPts(1 : 3, 4, 5) = [1; 1; 0];
+CtrlPts(1 : 3, 1, 5) = [0; 4; 0];
+CtrlPts(1 : 3, 2, 5) = [1; 4; 0];
+CtrlPts(1 : 3, 3, 5) = [2; 4; 0];
+CtrlPts(1 : 3, 4, 5) = [3; 4; 0];
+CtrlPts(1 : 3, 5, 5) = [4; 4; 0];
 
 % knot vectors
-KntVect{1} = [0 0 0 1/2 1 1 1];
+KntVect{1} = [0 0 0 1/3 2/3 1 1 1];
 KntVect{2} = [0 0 0 1/3 2/3 1 1 1];
 
 figure
@@ -79,16 +84,16 @@ for j = 1 : size(CtrlPts, 3)
 end 
 % Plot the B-spline surface
 
-ParaPts{1} = linspace(0, 1, 101);
-ParaPts{2} = linspace(0, 1, 101);
+ParaPts{1} = linspace(0, 1, 51);
+ParaPts{2} = linspace(0, 1, 51);
 
 S = BsplineEval(KntVect, CtrlPts, ParaPts);
 
-bcol = [173 234 234] ./ 250;
-bcol = repmat(bcol, 3, 1);
-colormap(bcol);
-surfl(squeeze(S(1,:,:)), squeeze(S(2,:,:)), squeeze(S(3,:,:)));
-shading interp
+% bcol = [173 234 234] ./ 250;
+% bcol = repmat(bcol, 3, 1);
+% colormap(bcol);
+surf(squeeze(S(1,:,:)), squeeze(S(2,:,:)), squeeze(S(3,:,:)));
+% shading interp
 view(3)
 
 % Plot the knots
@@ -105,3 +110,6 @@ for i = 1 : numel(uqKntVect{2})
     XiCurv = reshape(Curv{2}(:, :, i), 3, []);
     plot3(XiCurv(1, :), XiCurv(2, :), XiCurv(3, :), 'k');
 end
+
+axis on
+

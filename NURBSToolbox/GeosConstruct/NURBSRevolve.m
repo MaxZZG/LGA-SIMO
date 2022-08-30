@@ -98,7 +98,7 @@ end
 T  = vectrans(-pnt);
 angx = vecangle(vec(1),vec(3));
 RY = vecroty(-angx);
-vectmp = RY*[vecnorm(vec(:));1.0];
+vectmp = RY*[vecNorm(vec(:));1.0];
 angy = vecangle(vectmp(2),vectmp(3));
 RX = vecrotx(angy);
 curve = NURBSTForm(curve,RX*RY*T);

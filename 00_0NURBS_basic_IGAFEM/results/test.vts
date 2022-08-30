@@ -1,0 +1,123 @@
+<?xml version="1.0"?> 
+  <VTKFile type="StructuredGrid" version="0.1" >
+  <StructuredGrid  WholeExtent="0 1 0 1 0 4">
+  <Piece Extent="0 1 0 1 0 4">
+    <PointData Scalars="T" Vectors="Velocity"  >
+      <DataArray type="Float32" Name="T" format="ascii">
+        0 
+        0 
+        0 
+        0 
+        1 
+        1 
+        1 
+        1 
+        4 
+        4 
+        4 
+        4 
+        9 
+        9 
+        9 
+        9 
+        16 
+        16 
+        16 
+        16 
+      </DataArray>
+      <DataArray type="Float32" Name="Viscosity" format="ascii">
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+        1 
+      </DataArray>
+      <DataArray type="Float32" Name="P" format="ascii">
+        0 
+        0 
+        2 
+        2 
+        0 
+        0 
+        2 
+        2 
+        0 
+        0 
+        2 
+        2 
+        0 
+        0 
+        2 
+        2 
+        0 
+        0 
+        2 
+        2 
+      </DataArray>
+      <DataArray type="Float32" Name="Velocity" NumberOfComponents="3" format="ascii">
+   0 0 0 
+   0 1 0 
+   1 0 0 
+   1 1 0 
+   0 0 1 
+   0 1 1 
+   1 0 1 
+   1 1 1 
+   0 0 2 
+   0 1 2 
+   1 0 2 
+   1 1 2 
+   0 0 3 
+   0 1 3 
+   1 0 3 
+   1 1 3 
+   0 0 4 
+   0 1 4 
+   1 0 4 
+   1 1 4 
+      </DataArray>
+    </PointData>
+    <Celldata>
+    </Celldata>
+    <Points>
+      <DataArray type="Float32" Name="Array" NumberOfComponents="3" format="ascii">
+ 0 0 0 
+ 0 1 0 
+ 1 0 0 
+ 1 1 0 
+ 0 0 1 
+ 0 1 1 
+ 1 0 1 
+ 1 1 1 
+ 0 0 2 
+ 0 1 2 
+ 1 0 2 
+ 1 1 2 
+ 0 0 3 
+ 0 1 3 
+ 1 0 3 
+ 1 1 3 
+ 0 0 4 
+ 0 1 4 
+ 1 0 4 
+ 1 1 4 
+      </DataArray>
+    </Points>
+  </Piece> 
+  </StructuredGrid> 
+</VTKFile>
