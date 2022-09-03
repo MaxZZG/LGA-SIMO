@@ -28,34 +28,60 @@ CtrlPts(1 : 3, 2, 1) = [1; 0; 0];
 CtrlPts(1 : 3, 3, 1) = [2; 0; 0];
 CtrlPts(1 : 3, 4, 1) = [3; 0; 0];
 CtrlPts(1 : 3, 5, 1) = [4; 0; 0];
+CtrlPts(1 : 3, 6, 1) = [5; 0; 0];
+CtrlPts(1 : 3, 7, 1) = [6; 0; 0];
 
 CtrlPts(1 : 3, 1, 2) = [0; 1; 0];
 CtrlPts(1 : 3, 2, 2) = [1; 1; 1];
 CtrlPts(1 : 3, 3, 2) = [2; 1; 1];
 CtrlPts(1 : 3, 4, 2) = [3; 1; 1];
-CtrlPts(1 : 3, 5, 2) = [4; 1; 0];
+CtrlPts(1 : 3, 5, 2) = [4; 1; 1];
+CtrlPts(1 : 3, 6, 2) = [5; 1; 1];
+CtrlPts(1 : 3, 7, 2) = [6; 1; 0];
 
 CtrlPts(1 : 3, 1, 3) = [0; 2; 0];
 CtrlPts(1 : 3, 2, 3) = [1; 2; 1];
 CtrlPts(1 : 3, 3, 3) = [2; 2; 1];
 CtrlPts(1 : 3, 4, 3) = [3; 2; 1];
-CtrlPts(1 : 3, 5, 3) = [4; 2; 0];
+CtrlPts(1 : 3, 5, 3) = [4; 2; 1];
+CtrlPts(1 : 3, 6, 3) = [5; 2; 1];
+CtrlPts(1 : 3, 7, 3) = [6; 2; 0];
 
 CtrlPts(1 : 3, 1, 4) = [0; 3; 0];
 CtrlPts(1 : 3, 2, 4) = [1; 3; 1];
 CtrlPts(1 : 3, 3, 4) = [2; 3; 1];
 CtrlPts(1 : 3, 4, 4) = [3; 3; 1];
-CtrlPts(1 : 3, 5, 4) = [4; 3; 0];
+CtrlPts(1 : 3, 5, 4) = [4; 3; 1];
+CtrlPts(1 : 3, 6, 4) = [5; 3; 1];
+CtrlPts(1 : 3, 7, 4) = [6; 3; 0];
 
 CtrlPts(1 : 3, 1, 5) = [0; 4; 0];
-CtrlPts(1 : 3, 2, 5) = [1; 4; 0];
-CtrlPts(1 : 3, 3, 5) = [2; 4; 0];
-CtrlPts(1 : 3, 4, 5) = [3; 4; 0];
-CtrlPts(1 : 3, 5, 5) = [4; 4; 0];
+CtrlPts(1 : 3, 2, 5) = [1; 4; 1];
+CtrlPts(1 : 3, 3, 5) = [2; 4; 1];
+CtrlPts(1 : 3, 4, 5) = [3; 4; 1];
+CtrlPts(1 : 3, 5, 5) = [4; 4; 1];
+CtrlPts(1 : 3, 6, 5) = [5; 4; 1];
+CtrlPts(1 : 3, 7, 5) = [6; 4; 0];
+
+CtrlPts(1 : 3, 1, 6) = [0; 5; 0];
+CtrlPts(1 : 3, 2, 6) = [1; 5; 1];
+CtrlPts(1 : 3, 3, 6) = [2; 5; 1];
+CtrlPts(1 : 3, 4, 6) = [3; 5; 1];
+CtrlPts(1 : 3, 5, 6) = [4; 5; 1];
+CtrlPts(1 : 3, 6, 6) = [5; 5; 1];
+CtrlPts(1 : 3, 7, 6) = [6; 5; 0];
+
+CtrlPts(1 : 3, 1, 7) = [0; 6; 0];
+CtrlPts(1 : 3, 2, 7) = [1; 6; 0];
+CtrlPts(1 : 3, 3, 7) = [2; 6; 0];
+CtrlPts(1 : 3, 4, 7) = [3; 6; 0];
+CtrlPts(1 : 3, 5, 7) = [4; 6; 0];
+CtrlPts(1 : 3, 6, 7) = [5; 6; 0];
+CtrlPts(1 : 3, 7, 7) = [6; 6; 0];
 
 % knot vectors
-KntVect{1} = [0 0 0 1/3 2/3 1 1 1];
-KntVect{2} = [0 0 0 1/3 2/3 1 1 1];
+KntVect{1} = [0,0,0,0,1,2,3,4,4,4,4];
+KntVect{2} = [0,0,0,0,1,2,3,4,4,4,4];
 
 figure
 hold on
@@ -84,8 +110,8 @@ for j = 1 : size(CtrlPts, 3)
 end 
 % Plot the B-spline surface
 
-ParaPts{1} = linspace(0, 1, 51);
-ParaPts{2} = linspace(0, 1, 51);
+ParaPts{1} = linspace(min(KntVect{1}), max(KntVect{1}), 51);
+ParaPts{2} = linspace(min(KntVect{2}), max(KntVect{2}), 51);
 
 S = BsplineEval(KntVect, CtrlPts, ParaPts);
 

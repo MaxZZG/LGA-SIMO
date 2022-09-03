@@ -33,37 +33,35 @@ KntVect{1} = 0:1:8;
 KntVect{1} = KntVect{1} ./ max(KntVect{1});
 KntVect{1} = [KntVect{1}];
 
-KntVect{1} = sort(KntVect{1});
-
-KntVect{2} = [0 0 0 1 2 3 3 4 5 5 5];
+KntVect{2} = [0,0,0,0,1,2,2,2,2];
 KntVect{2} = KntVect{2} ./ max(KntVect{2});
 
 p = 3; % order of basis functions in xi direction
-q = 2; % order of basis functions in eta direction
+q = 3; % order of basis functions in eta direction
 
-[X, Y] = meshgrid(linspace(0, 1, 41));
-R1 = zeros(size(X, 1), size(X, 1));
-R2 = zeros(size(X, 1), size(X, 1));
-
-for i = 1 : size(X, 1)
-    for j = 1 : size(X, 1)
-        eta = X(1, i);
-        xi = Y(j, 1);
-        N = OneBasisFun(p, KntVect{1}, 5, xi);
-        M = OneBasisFun(q, KntVect{2}, 3, eta);
-        R1(i, j) = N * M;
-    end
-end
-
-for i = 1 : size(X, 1)
-    for j = 1 : size(X, 1)
-        eta = X(1, i);
-        xi = Y(j, 1);
-        N = OneBasisFun(p, KntVect{1}, 3, xi);
-        M = OneBasisFun(q, KntVect{2}, 8, eta);
-        R2(i, j) = N * M;
-    end
-end
+% [X, Y] = meshgrid(linspace(0, 1, 41));
+% R1 = zeros(size(X, 1), size(X, 1));
+% R2 = zeros(size(X, 1), size(X, 1));
+% 
+% for i = 1 : size(X, 1)
+%     for j = 1 : size(X, 1)
+%         eta = X(1, i);
+%         xi = Y(j, 1);
+%         N = OneBasisFun(p, KntVect{1}, 5, xi);
+%         M = OneBasisFun(q, KntVect{2}, 3, eta);
+%         R1(i, j) = N * M;
+%     end
+% end
+% 
+% for i = 1 : size(X, 1)
+%     for j = 1 : size(X, 1)
+%         eta = X(1, i);
+%         xi = Y(j, 1);
+%         N = OneBasisFun(p, KntVect{1}, 3, xi);
+%         M = OneBasisFun(q, KntVect{2}, 8, eta);
+%         R2(i, j) = N * M;
+%     end
+% end
 
 % Data for plot univariate basis functions
 ParaPts = 201;
@@ -103,11 +101,17 @@ end
 % plot3(zeros(ParaPts, 1), eta, M);
 % view(3)
 
-figure
+figure(1)
 
 plot(xi,N,'LineWidth',2)
 set(gca,'DataAspectRatio',[0.5 1 1])
 set(gca,'Box','off')
+
+figure(2)
+plot(eta,M,'LineWidth',2)
+set(gca,'DataAspectRatio',[0.5 1 1])
+set(gca,'Box','off')
+
 % text(0.2,0.8,'\itN_{1,2}','FontSize',30,'FontName','Times New Roman');
 % text(0.63,0.71,'\itN_{2,2}','FontSize',30,'FontName','Times New Roman');
 % text(1.3,0.71,'\itN_{3,2}','FontSize',30,'FontName','Times New Roman');

@@ -1,8 +1,7 @@
 
 clc
-clear all
 close all
-
+clear all
 
 n = 4;
 m = 4;
@@ -39,18 +38,16 @@ CP(4,5,:) = [3,4,0,1];
 CP(5,5,:) = [4,4,0,1];
 
 Tsurface = T_Surface(1,CP);
-
-Tsurface.plotSurf;
+plotSurf(1,Tsurface);
 Tsurface.plotmesh;
-Tsurface.plotmeshTp;
+% Tsurface.plotmeshTp;
+% Tsurface.plotmeshp;
 
-Tsurface.plotmeshp;
-
-
-
-
-
+Tsurface1 = T_Surface(0,CP);
+Tsurface1.plotSurf;
+Tsurface1.plotmesh;
 
 
-
+daspect([1 1 1])
+axis equal
 

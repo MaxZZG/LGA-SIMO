@@ -1083,9 +1083,9 @@ classdef T_Surface<handle
                 for j = 1:numel(vv)
                     try
 
-                        if flag == 0
+                        if flag == 1
                             [x,y,z] = Calculate(obj,uu(i),vv(j));
-                        elseif flag == 1
+                        else
                             [x,y,z] = CalculateMax(obj,uu(i),vv(j));
                         end
 
@@ -1808,7 +1808,58 @@ classdef T_Surface<handle
                  varargout{1}{end+1}=P;
                end
         end       %this function to show the neighboring edges and control points of a specific control point     
-        %%  
+        %%       
+    end
+    methods(Static=true)
+        function [N,Q]=basisfunction(controlpoint,u,v,p)
+            NN=zeros(p+1);
+            QQ=zeros(p+1);
+            for L=1:p+1
+                if u>=controlpoint.Uvector(L).Value && u<controlpoint.Uvector(L+1).Value
+                    i=L;
+                end
+                if v>=controlpoint.Vvector(L).Value && v<controlpoint.Vvector(L+1).Value
+                    j=L;
+                end
+            end
+            NN(i,1)=1;
+            QQ(j,1)=1;
+            for q=1:p
+                for j=1:p+1-q
+                    leftN=(u-controlpoint.Uvector(j).Value)/(controlpoint.Uvector(j+q).Value-controlpoint.Uvector(j).Value);
+                    rightN=(controlpoint.Uvector(j+q+1).Value-u)/(controlpoint.Uvector(j+q+1).Value-controlpoint.Uvector(j+1).Value);
+                    if isinf(leftN) || isnan(leftN)
+                        leftN=0;
+                    end
+                    if isinf(rightN) || isnan(rightN)
+                        rightN=0;
+                    end
+                    leftQ=(v-controlpoint.Vvector(j).Value)/(controlpoint.Vvector(j+q).Value-controlpoint.Vvector(j).Value);
+                    rightQ=(controlpoint.Vvector(j+q+1).Value-v)/(controlpoint.Vvector(j+q+1).Value-controlpoint.Vvector(j+1).Value);
+                    if isinf(leftQ) || isnan(leftQ)
+                        leftQ=0;
+                    end
+                    if isinf(rightQ) || isnan(rightQ)
+                        rightQ=0;
+                    end
+                    NN(j,q+1)=leftN.*NN(j,q)+rightN.*NN(j+1,q);
+                    QQ(j,q+1)=leftQ.*QQ(j,q)+rightQ.*QQ(j+1,q);
+                end
+            end
+          if i ==1 && u == 0
+              NN(1,end) = 1;
+          elseif i == 1 && u == 1 
+              NN(1,end) = 1;
+          end
+           if j == 1 && v == 0
+              QQ(1,end) = 1;
+          elseif j == 1 && v == 1 
+              QQ(1,end) = 1;
+          end
+            N=NN;
+            Q=QQ;
+        end%his fnction is to calculate basis function of specific control point. it's mostly used for point calculation, point derivation ad other functions 
+
 
 %% Max : support clamped T spline
 
@@ -1818,7 +1869,7 @@ classdef T_Surface<handle
         
         i = 0;
         j = 0;
-        for L = 1 : p + 1
+        for L=1:p+1
             if u>=controlpoint.Uvector(L).Value && u<controlpoint.Uvector(L+1).Value
                 i = L;
             end
@@ -1827,6 +1878,9 @@ classdef T_Surface<handle
             end
         end
     
+        N1 = 0;
+        N2 = 0;
+
         % calculate basis
         if i == 1
             N1 = (u-controlpoint.Uvector(1).Value)^3 ...
@@ -1933,11 +1987,13 @@ classdef T_Surface<handle
             N2 = 0;
         end
        
-        R = N1 * N2;
+    R = N1 * N2;
 
     end
 
-        function [coordinateX,coordinateY,coordinateZ] = CalculateMax(obj,Uparameter,Vparameter) %the purpose of this function is to calculate of a point on the T-spline surface. 
+
+
+       function [coordinateX,coordinateY,coordinateZ]=CalculateMax(obj,Uparameter,Vparameter) %the purpose of this function is to calculate of a point on the T-spline surface. 
             %the inputs are T-spline object, u and v parameter of the
             %point.
             p=3;% degree
@@ -1945,13 +2001,13 @@ classdef T_Surface<handle
             v=Vparameter;
             
             for i=1:numel(obj.controlpoint)
-                %if u>=obj.controlpoint(i).Uvector(1).Value && u<obj.controlpoint(i).Uvector(end).Value
-                    %if v>=obj.controlpoint(i).Vvector(1).Value && v<obj.controlpoint(i).Vvector(end).Value 
-                        [R] = clampedBasis(obj.controlpoint(i),u,v,p);
-                        X = R * obj.controlpoint(i).X * obj.controlpoint(i).W;
-                        Y = R * obj.controlpoint(i).Y * obj.controlpoint(i).W;
-                        Z = R * obj.controlpoint(i).Z * obj.controlpoint(i).W;
-                        Weight = R * R * obj.controlpoint(i).W;
+                if u>=obj.controlpoint(i).Uvector(1).Value && u<obj.controlpoint(i).Uvector(end).Value
+                    if v>=obj.controlpoint(i).Vvector(1).Value && v<obj.controlpoint(i).Vvector(end).Value 
+                        [N,Q]=T_Surface.clampedBasis(obj.controlpoint(i),u,v,p);
+                        X=N(1,p+1)*Q(1,p+1)*obj.controlpoint(i).X*obj.controlpoint(i).W;
+                        Y=N(1,p+1)*Q(1,p+1)*obj.controlpoint(i).Y*obj.controlpoint(i).W;
+                        Z=N(1,p+1)*Q(1,p+1)*obj.controlpoint(i).Z*obj.controlpoint(i).W;
+                        Weight=N(1,p+1)*Q(1,p+1)*obj.controlpoint(i).W;
                         if ~exist('x','var')
                             x=X;
                             y=Y;
@@ -1963,8 +2019,8 @@ classdef T_Surface<handle
                             z=z+Z;
                             w=w+Weight;
                         end
-                    %end
-                %end
+                    end
+                end
             end
             
             %%for insurance
@@ -1983,57 +2039,6 @@ classdef T_Surface<handle
                 coordinateZ=[];
             end
         end
-    end
-
-    methods(Static=true)
-        function [N,Q]=basisfunction(controlpoint,u,v,p)
-            NN=zeros(p+1);
-            QQ=zeros(p+1);
-            for L=1:p+1
-                if u>=controlpoint.Uvector(L).Value && u<controlpoint.Uvector(L+1).Value
-                    i=L;
-                end
-                if v>=controlpoint.Vvector(L).Value && v<controlpoint.Vvector(L+1).Value
-                    j=L;
-                end
-            end
-            NN(i,1)=1;
-            QQ(j,1)=1;
-            for q=1:p
-                for j=1:p+1-q
-                    leftN=(u-controlpoint.Uvector(j).Value)/(controlpoint.Uvector(j+q).Value-controlpoint.Uvector(j).Value);
-                    rightN=(controlpoint.Uvector(j+q+1).Value-u)/(controlpoint.Uvector(j+q+1).Value-controlpoint.Uvector(j+1).Value);
-                    if isinf(leftN) || isnan(leftN)
-                        leftN=0;
-                    end
-                    if isinf(rightN) || isnan(rightN)
-                        rightN=0;
-                    end
-                    leftQ=(v-controlpoint.Vvector(j).Value)/(controlpoint.Vvector(j+q).Value-controlpoint.Vvector(j).Value);
-                    rightQ=(controlpoint.Vvector(j+q+1).Value-v)/(controlpoint.Vvector(j+q+1).Value-controlpoint.Vvector(j+1).Value);
-                    if isinf(leftQ) || isnan(leftQ)
-                        leftQ=0;
-                    end
-                    if isinf(rightQ) || isnan(rightQ)
-                        rightQ=0;
-                    end
-                    NN(j,q+1)=leftN.*NN(j,q)+rightN.*NN(j+1,q);
-                    QQ(j,q+1)=leftQ.*QQ(j,q)+rightQ.*QQ(j+1,q);
-                end
-            end
-          if i ==1 && u == 0
-              NN(1,end) = 1;
-          elseif i == 1 && u == 1 
-              NN(1,end) = 1;
-          end
-           if j == 1 && v == 0
-              QQ(1,end) = 1;
-          elseif j == 1 && v == 1 
-              QQ(1,end) = 1;
-          end
-            N=NN;
-            Q=QQ;
-        end%his fnction is to calculate basis function of specific control point. it's mostly used for point calculation, point derivation ad other functions 
 
     end
 
