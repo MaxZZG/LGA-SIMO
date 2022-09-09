@@ -25,6 +25,6 @@ addpath(genpath(fullfile(pwd,'Tspline')))
 
 addpath(genpath(fullfile(pwd,'Max'))) % Max的例子
 
-
+addpath(genpath(fullfile(pwd,'input'))) % Max的输入
 
 

@@ -27,8 +27,8 @@ end
 
 % 生成NURBS节点向量
 
-uknot = [0,0,0,0,1.5,2,2,2,2];
-vknot = [0,0,0,0,1.5,2,2,2,2];
+uknot = [0,0,0,0,1,2,3,4,5,5,5,5];
+vknot = [0,0,0,0,1,2,3,4,5,5,5,5];
 
 uknot = uknot / max(uknot);
 vknot = uknot / max(vknot);
@@ -55,11 +55,12 @@ for e=1:noElems
     
     bezierPts = Q(:,:,e);
 
-    A = inv(diag(Wb))*Ce'*we;
+    A = (inv(diag(Wb))*Ce'*we);
     pts = inv(A) * bezierPts;
 
     test = inv(diag(Wb))*Ce'*we * pts;
 
+    
 end
 
 

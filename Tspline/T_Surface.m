@@ -2,17 +2,18 @@ classdef T_Surface<handle
     
     properties%(all of them are array of objects)
         controlpoint %vector of ControlPoint objects
-        edge %vector of Edge objects
+        edge %vector of Edge objects 
         U   %vector of Uknot objects
         V   %vector of Vknot objects
     end
     
     methods
-        function obj=T_Surface(flag,varargin)%we have two types of input, type 1: no inputs that means you construct a T-surface with no details, 
+        function obj=T_Surface(varargin)%we have two types of input, type 1: no inputs that means you construct a T-surface with no details, 
             %type 2:  matrix by size of (n+1,m+1,4)
             %data is a matrix by size of (n+1,m+1,4); dimension 3 indicates x, y, z, w;
             %which represents a grid of NURBS controlpoints
-            if nargin==2
+            % 按照生成NURBS的方式生成T样条
+            if nargin==1
                 data=varargin{1};
                 %% controlpoint construction
                 nplus=size(data,1);
@@ -24,23 +25,20 @@ classdef T_Surface<handle
                 U=zeros((n+degree+1)+1,1);
                 V=zeros((m+degree+1)+1,1);
                 %%
-
-            if flag == 1
                 %clamped condition for knot vectors
-                du=1/(n+degree-2*degree+1);
-                dv=1/(m+degree-2*degree+1);
-                for i=degree+1:n+1
-                    U(i+1)=U(i)+du;
-                end
-                for i=degree+1:m+1
-                    V(i+1)=V(i)+dv;
-                end
-                U(n+2:end,1)=1;
-                V(m+2:end,1)=1;
-            else
+%                 du=1/(n+degree-2*degree+1);
+%                 dv=1/(m+degree-2*degree+1);
+%                 for i=degree+1:n+1
+%                     U(i+1)=U(i)+du;
+%                 end
+%                 for i=degree+1:m+1
+%                     V(i+1)=V(i)+dv;
+%                 end
+%                 U(n+2:end,1)=1;
+%                 V(m+2:end,1)=1;
                 %
 % uniform condition for knot vectors 
-%%
+%% 生成 UV , UV 没有重节点
                 du=1/(n+degree+1);
                 dv=1/(m+degree+1);
 
@@ -52,11 +50,9 @@ classdef T_Surface<handle
                     V(i+1)=V(i)+dv;
                 end
                 V(end) = 1;
-            end    
-                  %%
-                  
-            
-                  
+                  %% 这里存储节点向量之间的拓扑关系，U和V是单独的
+                  % 用双向链表存储
+
                 obj.U=Uknot.empty(n+degree+1+1,0);
                 obj.V=Vknot.empty(m+degree+1+1,0);
                 
@@ -80,11 +76,11 @@ classdef T_Surface<handle
                     end
                     
                 end
-                %%
+                %% 生成控制顶点的数据结构
                 %put controlpoint objects in cell to create default mesh a
                 %NURBS surface
                 cp=cell(n+1,m+1);
-                c=0;
+                c=0;              % 控制顶点编号
                 obj.controlpoint=ControlPoint.empty((n+1)*(m+1),0);
                 for i=1:n+1
                     for j=1:m+1
@@ -94,6 +90,7 @@ classdef T_Surface<handle
                     end
                 end
                 
+                % 控制顶点的拓扑关系
                 %neighberhood(put neighbering controlpoints to controlpoint object)
                 for i=1:n+1
                     for j=1:m+1
@@ -113,6 +110,7 @@ classdef T_Surface<handle
                 end
                 
                 %% edge construction in cells
+                % 生成单元的边
                 edH=cell(n+1,m+2);
                 edV=cell(n+2,m+1);
                 c=0;
@@ -152,8 +150,8 @@ classdef T_Surface<handle
                     end
                 end
                 
-                
-                %neighberhood(put neighbering controlpoints to controlpoint object)
+                % neighberhood(put neighbering controlpoints to controlpoint object)
+                % 创建控制顶点的边的拓扑关系
                 for i=1:n+1
                     for j=1:m+1
                         cp{i,j}.RightEdge=edH{i,j+1};
@@ -170,7 +168,7 @@ classdef T_Surface<handle
                 obj.edge=[];
             end
         end
-        %%
+        %% 画出控制顶点的网格
         function plotmesh(obj) %this fucntion is to plot control grid in cartesian. the input is just T-spline surface 
             figure(1)
             hold on
@@ -222,14 +220,14 @@ classdef T_Surface<handle
             axis equal
             view(20,20);
         end
-        %%
-        function plotSurf(flag,obj) %this part is to plot surface. the input is T-spline surface
+        %% 画出曲面，这里是计算曲面上的很多点
+        function plotSurf(obj) %this part is to plot surface. the input is T-spline surface
             figure(1)
             hold on
-            data = extract_Data(flag,obj);
+            data = extract_Data(obj);
             surf(data(:,:,1),data(:,:,2),data(:,:,3));
         end
-        %%
+        %% 插入节点算法
         function obj=InsertPoint(obj,edgenumber,varargin) % this function is used to add control points by the algorithm which is introduced in 2003 by sederberg
             %%
             %there are three types of using this function
@@ -238,25 +236,25 @@ classdef T_Surface<handle
             % to simplified the using of inserting control point user can
             % add T-spline object and the number of edge that user wants to
             % split then add a control point. parameter of new control point
-            % is in the middle of former(selected) edge
+            % is in the middle of former(selected) edge 边的中点
                                 %% SECOND %%
-             % obj = InsertPoint(obj,edgenumber,knot)
+             % obj = InsertPoint(obj,edgenumber,knot) 
              % the inputs are T-spline object, the number of edge that user
              % wants to split and a existed knot which it's parameter is
              % locatad on edge.
              % this type of inputs is mostly used by program and functions in some
              % situations
                                 %% THIRD %%
-             % obj = InsertPoint(obj,edgenumber,value)
+             % obj = InsertPoint(obj,edgenumber,value) 
              % the inputs are like previous type except value which is the
-             % parameter value
-             %this type mostly used by other programs and functions
+             % parameter value 参数值
+             % this type mostly used by other programs and functions
              %%
              
              
-            edgepopulation=numel(obj.edge);
-            %to find the edge(the variable 'i' is important that indicate
-            %the index of edge number(as amature programmer it is programmed : )  )
+            edgepopulation=numel(obj.edge); % 边的数量
+            % to find the edge(the variable 'i' is important that indicate
+            % the index of edge number(as amature programmer it is programmed : )  )
             for i=1:edgepopulation
                 if obj.edge(i).Number==edgenumber
                     SelectedEdge=obj.edge(i); %SelectedEdge is edge you choose to split
@@ -268,9 +266,10 @@ classdef T_Surface<handle
             direct=SelectedEdge.Direction; %direct is direction of SelectedEdge ('horizontal' or 'vertical')
             
                                 %% newknot %%
-            %this is to make new knot with parameter we add as input and add it to U or V vector of T-spline object 
-            if nargin==2
-                switch direct
+            % this is to make new knot with parameter we add as input and add it to U or V vector of T-spline object 
+            % 插入节点
+            if nargin==2 % 未指定插入节点的值
+                switch direct % 插入边的方向
                     case 'horizontal'
                         if SelectedEdge.LastTip.Number-SelectedEdge.FirstTip.Number==2
                             number=SelectedEdge.FirstTip.Number+1;
@@ -379,11 +378,13 @@ classdef T_Surface<handle
                 end
             end
             %%
-                                                    %%  neighboring edges of Selected edge %%
+            %%  neighboring edges of Selected edge %%
             % this part is to check neighboring edges of Selected edge to
             % find out that if they exist or not
             % if they don't exist we most build a edge on every side of
             % Selected edge in same orientation of Selected edge
+            % 检查临边
+
             switch direct
                 
                 case  'horizontal'
@@ -456,13 +457,13 @@ classdef T_Surface<handle
             end
             
             
-                                    %% domain checking %%
+            %% domain checking %% 
             % this part is to check domian of neighboring control points 
-            %if there are some inequality of domains we most add control
-            %points to satisfy the pre-condition of adding control point on Selected edge 
+            % if there are some inequality of domains we most add control
+            % points to satisfy the pre-condition of adding control point on Selected edge 
             switch direct
                 case 'vertical'
-                    %one step down domain checking
+                    % one step down domain checking
                     for localknotnumber=2:-1:1
                         
                         for iteration=1:3
@@ -700,6 +701,7 @@ classdef T_Surface<handle
                     end
             end
             
+            % 创建新的控制顶点
             %create new controlpoint (according to sederberg's paper)
             switch direct
                 case 'horizontal'
@@ -708,7 +710,7 @@ classdef T_Surface<handle
                     P4=SelectedEdge.LastControlPoint;
                     P5=SelectedEdge.LastControlPoint.RightPoint;
                     
-                    %homogenous coordinates
+                    % homogenous coordinates
                     P2XW=(P1.XW*(P4.CPCV.Value-newknot.Value)+(newknot.Value-P1.Vvector(2).Value)*P2.XW)/(P4.CPCV.Value-P1.Vvector(2).Value);
                     P2YW=(P1.YW*(P4.CPCV.Value-newknot.Value)+(newknot.Value-P1.Vvector(2).Value)*P2.YW)/(P4.CPCV.Value-P1.Vvector(2).Value);
                     P2ZW=(P1.ZW*(P4.CPCV.Value-newknot.Value)+(newknot.Value-P1.Vvector(2).Value)*P2.ZW)/(P4.CPCV.Value-P1.Vvector(2).Value);
@@ -724,7 +726,7 @@ classdef T_Surface<handle
                     P3ZW=(P2.ZW*(P5.CPCV.Value-newknot.Value)+P4.ZW*(newknot.Value-P1.CPCV.Value))/(P5.CPCV.Value-P1.CPCV.Value);
                     P3W=(P2.W*(P5.CPCV.Value-newknot.Value)+P4.W*(newknot.Value-P1.CPCV.Value))/(P5.CPCV.Value-P1.CPCV.Value);
                     
-                    %Non-homogeneous coordinate
+                    % Non-homogeneous coordinate
                     P2.X=P2XW/P2W;
                     P2.Y=P2YW/P2W;
                     P2.Z=P2ZW/P2W;
@@ -761,7 +763,7 @@ classdef T_Surface<handle
                     P3ZW=(P2.ZW*(P5.CPCU.Value-newknot.Value)+P4.ZW*(newknot.Value-P1.CPCU.Value))/(P5.CPCU.Value-P1.CPCU.Value);
                     P3W=(P2.W*(P5.CPCU.Value-newknot.Value)+P4.W*(newknot.Value-P1.CPCU.Value))/(P5.CPCU.Value-P1.CPCU.Value);
                     
-                    %Non-homogeneous coordinate
+                    % Non-homogeneous coordinate
                     P2.X=P2XW/P2W;
                     P2.Y=P2YW/P2W;
                     P2.Z=P2ZW/P2W;
@@ -778,13 +780,13 @@ classdef T_Surface<handle
                     P4.W=1;
             end
             
-            %%
+            %% 
             % create new edge object
-            %we have 2 new edge after splitting. the first piece is created
-            %by modifying the older edge and the second one created by creating new edge object
-            %newedge is second edge
-            %in this section also we will create a new controlpoint that we
-            %intented to add at the first place
+            % we have 2 new edge after splitting. the first piece is created
+            % by modifying the older edge and the second one created by creating new edge object
+            % newedge is second edge
+            % in this section also we will create a new controlpoint that we
+            % intented to add at the first place
             
             newEdge=Edge(direct);
             newEdge.FirstTip=newknot;
@@ -888,11 +890,12 @@ classdef T_Surface<handle
                     
             end
             
-                                %% T-spline rules %%
-            %this section is to check the T-spline rules and if it's needed
-            %we must creat a new edge
-            %The default code in this section is premitive it can be
-            %improved by findobj methods
+            %% T-spline rules %% T 样条的规则
+            % this section is to check the T-spline rules and if it's needed
+            % we must creat a new edge
+            % The default code in this section is premitive it can be
+            % improved by findobj methods
+
             index=edgeOrientparameter.Number;
             switch direct
                 case 'horizontal'
@@ -1071,8 +1074,8 @@ classdef T_Surface<handle
             end
             
         end
-        %%
-        function dataPoints = extract_Data(flag,obj)
+        %% 求曲面
+        function dataPoints = extract_Data(obj)
             resolution = 100;
             step=1/(resolution-1);
             uu = linspace(obj.U(1).Value,obj.U(end).Value-step,resolution);
@@ -1082,13 +1085,7 @@ classdef T_Surface<handle
             for i = 1:numel(uu)
                 for j = 1:numel(vv)
                     try
-
-                        if flag == 0
-                            [x,y,z] = Calculate(obj,uu(i),vv(j));
-                        elseif flag == 1
-                            [x,y,z] = CalculateMax(obj,uu(i),vv(j));
-                        end
-
+                        [x,y,z] = Calculate(obj,uu(i),vv(j));
                         dataPoints(i,j,1)=x; dataPoints(i,j,2)=y; dataPoints(i,j,3)=z;
                     catch
                         error(['i = ',num2str(i),', j = ',num2str(j)])
@@ -1096,10 +1093,10 @@ classdef T_Surface<handle
                 end
             end
         end
-        %%
+        %% 画出参数空间网格的拓扑结构
         function plotmeshTp(obj) %this function plot the topolgy of T-spline surface      
-            %the axis of this plot is index of knots in to vu and v
-            %parameter
+            % the axis of this plot is index of knots in to vu and v
+            % parameter
             figure(2)
             format short
             digits(2)
@@ -1140,7 +1137,7 @@ classdef T_Surface<handle
                 end
             end
         end
-        %%
+        %% 求出曲面上的点
         function [coordinateX,coordinateY,coordinateZ]=Calculate(obj,Uparameter,Vparameter) %the purpose of this function is to calculate of a point on the T-spline surface. 
             %the inputs are T-spline object, u and v parameter of the
             %point.
@@ -1149,8 +1146,8 @@ classdef T_Surface<handle
             v=Vparameter;
             
             for i=1:numel(obj.controlpoint)
-                if u>=obj.controlpoint(i).Uvector(1).Value && u<obj.controlpoint(i).Uvector(end).Value
-                    if v>=obj.controlpoint(i).Vvector(1).Value && v<obj.controlpoint(i).Vvector(end).Value 
+                if u>=obj.controlpoint(i).Uvector(1).Value && u<=obj.controlpoint(i).Uvector(end).Value
+                    if v>=obj.controlpoint(i).Vvector(1).Value && v<=obj.controlpoint(i).Vvector(end).Value 
                         [N,Q]=T_Surface.basisfunction(obj.controlpoint(i),u,v,p);
                         X=N(1,p+1)*Q(1,p+1)*obj.controlpoint(i).X*obj.controlpoint(i).W;
                         Y=N(1,p+1)*Q(1,p+1)*obj.controlpoint(i).Y*obj.controlpoint(i).W;
@@ -1187,7 +1184,7 @@ classdef T_Surface<handle
                 coordinateZ=[];
             end
         end
-        %%
+        %% 打印出UV空间的信息
         function [UvectorDetail,VvectorDetail]=UVDetail(obj) % the purpose of the this function is to show the knot vectors and their details in table in command window
             for i=1:numel(obj.U)
                 if ~isvalid(obj.U(i))
@@ -1240,8 +1237,8 @@ classdef T_Surface<handle
             VvectorDetail=table(VNum,VValue,BackV,NextV);
             %
         end
-        %%
-        function obj=ReArrange(obj) %make controlpoints and vectors in order by number
+        %% 
+        function obj=ReArrange(obj) % make controlpoints and vectors in order by number
             for i=1:numel(obj.controlpoint)
                 obj.controlpoint(i).Number=i;
             end
@@ -1385,9 +1382,10 @@ classdef T_Surface<handle
             vdomain(3)=cp.CPCV;
             udomain(3)=cp.CPCU;
             
-        end%%%checking controlpoint Domain by mesh
+        end %%%checking controlpoint Domain by mesh
         %%
-        function obj=InsertRow(obj,knot) %to make a row or collumn of control points on the control grid
+        function obj=InsertRow(obj,knot) 
+            % to make a row or collumn of control points on the control grid
             % the inputs are T-spline object and a knot
             % it's important that the knot must be existed. if you want to
             % add a knot you must use inserting point function to build or
@@ -1423,7 +1421,7 @@ classdef T_Surface<handle
                 end
             end
         end
-        %%
+        %% 
         function [varargout]=plotDomainCP(obj,cp_num)
             d=0.1;
             
@@ -1489,7 +1487,8 @@ classdef T_Surface<handle
             %             axis equal
         end
         %%
-        function [A,B]=Coef(obj,Point,u,v,Knot,Direction)%the purpose of this function is to calculate the linear combination of Basis Function of a selected control point
+        function [A,B]=Coef(obj,Point,u,v,Knot,Direction)
+            % the purpose of this function is to calculate the linear combination of Basis Function of a selected control point
             %% inputs %%
             % obj: T-spline surface
             % Point: seleceted control point
@@ -1552,7 +1551,7 @@ classdef T_Surface<handle
             B{1}=Uvector2;B{2}=Vvector2;B{3}=c2;B{4}=cp2;
             
         end
-        %%
+        %% 
         function obj=Remesh(obj,Point) %this function is to remesh the control grid by adding a new point it's mainly used to show former algorithm to add control points
             %%
             for i=Point.CPCV.Number-1:-1:1
@@ -1808,192 +1807,17 @@ classdef T_Surface<handle
                  varargout{1}{end+1}=P;
                end
         end       %this function to show the neighboring edges and control points of a specific control point     
-        %%  
-
-%% Max : support clamped T spline
-
-% Max:clamped basis function
-
-    function [R] = clampedBasis(controlpoint,u,v,p)   
-        
-        i = 0;
-        j = 0;
-        for L = 1 : p + 1
-            if u>=controlpoint.Uvector(L).Value && u<controlpoint.Uvector(L+1).Value
-                i = L;
-            end
-            if v>=controlpoint.Vvector(L).Value && v<controlpoint.Vvector(L+1).Value
-                j = L;
-            end
-        end
-    
-        % calculate basis
-        if i == 1
-            N1 = (u-controlpoint.Uvector(1).Value)^3 ...
-                    / (controlpoint.Uvector(4).Value - controlpoint.Uvector(1).Value) ...
-                    / (controlpoint.Uvector(3).Value - controlpoint.Uvector(1).Value) ...
-                    / (controlpoint.Uvector(2).Value - controlpoint.Uvector(1).Value) ;
-            if isnan(N1)
-                N1 = 0;
-            end
-        elseif i == 2
-            N1 = (-(u-controlpoint.Uvector(1).Value)^2 * (u-controlpoint.Uvector(3).Value)) ...
-                    / (controlpoint.Uvector(4).Value - controlpoint.Uvector(1).Value) ...
-                    / (controlpoint.Uvector(3).Value - controlpoint.Uvector(1).Value) ...
-                    / (controlpoint.Uvector(3).Value - controlpoint.Uvector(2).Value) + ...
-                (-(u-controlpoint.Uvector(4).Value) * (u-controlpoint.Uvector(2).Value) * (u-controlpoint.Uvector(1).Value)) ...
-                    / (controlpoint.Uvector(4).Value - controlpoint.Uvector(2).Value) ...
-                    / (controlpoint.Uvector(4).Value - controlpoint.Uvector(1).Value) ...
-                    / (controlpoint.Uvector(3).Value - controlpoint.Uvector(2).Value) + ...
-                (-(u-controlpoint.Uvector(2).Value)^2 * (u-controlpoint.Uvector(5).Value)) ...
-                    / (controlpoint.Uvector(5).Value - controlpoint.Uvector(2).Value) ...
-                    / (controlpoint.Uvector(4).Value - controlpoint.Uvector(2).Value) ...
-                    / (controlpoint.Uvector(3).Value - controlpoint.Uvector(2).Value) ;                                                                               
-            if isnan(N1)
-                N1 = 0;
-            end
-        elseif i == 3
-            N1 = ((u-controlpoint.Uvector(4).Value)^2 * (u-controlpoint.Uvector(1).Value)) ...
-                    / (controlpoint.Uvector(4).Value - controlpoint.Uvector(1).Value) ...
-                    / (controlpoint.Uvector(4).Value - controlpoint.Uvector(2).Value) ...
-                    / (controlpoint.Uvector(4).Value - controlpoint.Uvector(3).Value) + ...
-                (-(u-controlpoint.Uvector(2).Value) * (u-controlpoint.Uvector(4).Value) * (u-controlpoint.Uvector(5).Value)) ...
-                    / (controlpoint.Uvector(4).Value - controlpoint.Uvector(2).Value) ...
-                    / (controlpoint.Uvector(4).Value - controlpoint.Uvector(3).Value) ...
-                    / (controlpoint.Uvector(5).Value - controlpoint.Uvector(2).Value) + ...
-                (-(u-controlpoint.Uvector(5).Value)^2 * (u-controlpoint.Uvector(3).Value)) ...
-                    / (controlpoint.Uvector(5).Value - controlpoint.Uvector(2).Value) ...
-                    / (controlpoint.Uvector(5).Value - controlpoint.Uvector(2).Value) ...
-                    / (controlpoint.Uvector(4).Value - controlpoint.Uvector(3).Value) ;                                                                    
-            if isnan(N1)
-                N1 = 0;
-            end
-        elseif i == 4
-            N1 = ((u-controlpoint.Uvector(5).Value)^3) ...
-                    / (controlpoint.Uvector(5).Value - controlpoint.Uvector(2).Value) ...
-                    / (controlpoint.Uvector(5).Value - controlpoint.Uvector(3).Value) ...
-                    / (controlpoint.Uvector(5).Value - controlpoint.Uvector(4).Value) ;                                                                            
-            if isnan(N1)
-                N1 = 0;
-            end
-        else
-            N1 = 0;
-        end
-
-        % calculate basis
-        if j == 1
-            N2 = (v-controlpoint.Vvector(1).Value)^3 ...
-                    / (controlpoint.Vvector(4).Value - controlpoint.Vvector(1).Value) ...
-                    / (controlpoint.Vvector(3).Value - controlpoint.Vvector(1).Value) ...
-                    / (controlpoint.Vvector(2).Value - controlpoint.Vvector(1).Value) ;
-            if isnan(N2)
-                N2 = 0;
-            end
-        elseif j == 2
-            N2 = (-(v-controlpoint.Vvector(1).Value)^2 * (v-controlpoint.Vvector(3).Value)) ...
-                    / (controlpoint.Vvector(4).Value - controlpoint.Vvector(1).Value) ...
-                    / (controlpoint.Vvector(3).Value - controlpoint.Vvector(1).Value) ...
-                    / (controlpoint.Vvector(3).Value - controlpoint.Vvector(2).Value) + ...
-                (-(v-controlpoint.Vvector(4).Value) * (v-controlpoint.Vvector(2).Value) * (v-controlpoint.Vvector(1).Value)) ...
-                    / (controlpoint.Vvector(4).Value - controlpoint.Vvector(2).Value) ...
-                    / (controlpoint.Vvector(4).Value - controlpoint.Vvector(1).Value) ...
-                    / (controlpoint.Vvector(3).Value - controlpoint.Vvector(2).Value) + ...
-                (-(v-controlpoint.Vvector(2).Value)^2 * (v-controlpoint.Vvector(5).Value)) ...
-                    / (controlpoint.Vvector(5).Value - controlpoint.Vvector(2).Value) ...
-                    / (controlpoint.Vvector(4).Value - controlpoint.Vvector(2).Value) ...
-                    / (controlpoint.Vvector(3).Value - controlpoint.Vvector(2).Value) ;                                                                               
-            if isnan(N2)
-                N2 = 0;
-            end
-        elseif j == 3
-            N2 = ((v-controlpoint.Vvector(4).Value)^2 * (v-controlpoint.Vvector(1).Value)) ...
-                    / (controlpoint.Vvector(4).Value - controlpoint.Vvector(1).Value) ...
-                    / (controlpoint.Vvector(4).Value - controlpoint.Vvector(2).Value) ...
-                    / (controlpoint.Vvector(4).Value - controlpoint.Vvector(3).Value) + ...
-                (-(v-controlpoint.Vvector(2).Value) * (v-controlpoint.Vvector(4).Value) * (v-controlpoint.Vvector(5).Value)) ...
-                    / (controlpoint.Vvector(4).Value - controlpoint.Vvector(2).Value) ...
-                    / (controlpoint.Vvector(4).Value - controlpoint.Vvector(3).Value) ...
-                    / (controlpoint.Vvector(5).Value - controlpoint.Vvector(2).Value) + ...
-                (-(v-controlpoint.Vvector(5).Value)^2 * (v-controlpoint.Vvector(3).Value)) ...
-                    / (controlpoint.Vvector(5).Value - controlpoint.Vvector(2).Value) ...
-                    / (controlpoint.Vvector(5).Value - controlpoint.Vvector(2).Value) ...
-                    / (controlpoint.Vvector(4).Value - controlpoint.Vvector(3).Value) ;                                                                    
-            if isnan(N2)
-                N2 = 0;
-            end
-        elseif i == 4
-            N2 = ((v-controlpoint.Vvector(5).Value)^3) ...
-                    / (controlpoint.Vvector(5).Value - controlpoint.Vvector(2).Value) ...
-                    / (controlpoint.Vvector(5).Value - controlpoint.Vvector(3).Value) ...
-                    / (controlpoint.Vvector(5).Value - controlpoint.Vvector(4).Value) ;                                                                            
-            if isnan(N2)
-                N2 = 0;
-            end
-        else
-            N2 = 0;
-        end
-       
-        R = N1 * N2;
-
+        %%       
     end
-
-        function [coordinateX,coordinateY,coordinateZ] = CalculateMax(obj,Uparameter,Vparameter) %the purpose of this function is to calculate of a point on the T-spline surface. 
-            %the inputs are T-spline object, u and v parameter of the
-            %point.
-            p=3;% degree
-            u=Uparameter;
-            v=Vparameter;
-            
-            for i=1:numel(obj.controlpoint)
-                %if u>=obj.controlpoint(i).Uvector(1).Value && u<obj.controlpoint(i).Uvector(end).Value
-                    %if v>=obj.controlpoint(i).Vvector(1).Value && v<obj.controlpoint(i).Vvector(end).Value 
-                        [R] = clampedBasis(obj.controlpoint(i),u,v,p);
-                        X = R * obj.controlpoint(i).X * obj.controlpoint(i).W;
-                        Y = R * obj.controlpoint(i).Y * obj.controlpoint(i).W;
-                        Z = R * obj.controlpoint(i).Z * obj.controlpoint(i).W;
-                        Weight = R * R * obj.controlpoint(i).W;
-                        if ~exist('x','var')
-                            x=X;
-                            y=Y;
-                            z=Z;
-                            w=Weight;
-                        else
-                            x=x+X;
-                            y=y+Y;
-                            z=z+Z;
-                            w=w+Weight;
-                        end
-                    %end
-                %end
-            end
-            
-            %%for insurance
-            
-            if exist('x','var')
-                %%
-                coordinateX=x/w;
-                coordinateY=y/w;
-                coordinateZ=z/w;
-                
-                %%
-                clear x y z
-            else
-                coordinateX=[];
-                coordinateY=[];
-                coordinateZ=[];
-            end
-        end
-    end
-
     methods(Static=true)
         function [N,Q]=basisfunction(controlpoint,u,v,p)
-            NN=zeros(p+1);
+            NN=zeros(p+1); 
             QQ=zeros(p+1);
             for L=1:p+1
-                if u>=controlpoint.Uvector(L).Value && u<controlpoint.Uvector(L+1).Value
+                if u>=controlpoint.Uvector(L).Value && u<=controlpoint.Uvector(L+1).Value
                     i=L;
                 end
-                if v>=controlpoint.Vvector(L).Value && v<controlpoint.Vvector(L+1).Value
+                if v>=controlpoint.Vvector(L).Value && v<=controlpoint.Vvector(L+1).Value
                     j=L;
                 end
             end
@@ -2025,16 +1849,22 @@ classdef T_Surface<handle
               NN(1,end) = 1;
           elseif i == 1 && u == 1 
               NN(1,end) = 1;
+          elseif i == p+1 && u == 0 
+              NN(1,end) = 1;
+          elseif i == p+1 && u == 1 
+              NN(1,end) = 1;
           end
            if j == 1 && v == 0
               QQ(1,end) = 1;
           elseif j == 1 && v == 1 
               QQ(1,end) = 1;
+          elseif j == p+1 && v == 0 
+              QQ(1,end) = 1;
+          elseif j == p+1 && v == 1 
+              QQ(1,end) = 1;
           end
             N=NN;
             Q=QQ;
         end%his fnction is to calculate basis function of specific control point. it's mostly used for point calculation, point derivation ad other functions 
-
     end
-
 end

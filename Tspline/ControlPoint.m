@@ -2,19 +2,19 @@ classdef ControlPoint<handle
     
     properties
         %
-        X;Y;Z;W;
+        X;Y;Z;W; % 坐标
         %
-        Uvector;  Vvector;
+        Uvector;  Vvector; % 局部支集
         %
-        RightPoint; LeftPoint; UpPoint; DownPoint;
+        RightPoint; LeftPoint; UpPoint; DownPoint; % 点的拓扑关系
         %
-        RightEdge; LeftEdge; UpEdge; DownEdge
+        RightEdge; LeftEdge; UpEdge; DownEdge % 边
         %
         Number
     end
     properties(Dependent=true)
          CPCU                        %  CentralParameterCoordinateU; %CPCU
-         CPCV                         %         CentralParameterCoordinateV; %CPCV
+         CPCV                         %  CentralParameterCoordinateV; %CPCV
         %
         ParameterSpanU;
         ParameterSpanV;
