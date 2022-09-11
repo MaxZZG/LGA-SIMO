@@ -1,4 +1,4 @@
-function [C nb] = bezierExtraction(knot,p)
+function [C,nb] = bezierExtraction(knot,p)
 % Bezier extraction
 % Taken from the master thesis of 
 %
