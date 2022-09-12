@@ -19,8 +19,9 @@ si = 1;
 while b < mbar
     c(nb+1,:) = 0;
     add = 0;
-
-    if si <= m && find(spans,si) == ki % 
+    
+    temp = find(spans==si);
+    if si <= m &&  temp(1)== ki % 
         mult = 0;
         add = 1;
     
